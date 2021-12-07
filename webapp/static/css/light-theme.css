@@ -1,0 +1,232 @@
+/* ------------------------------ COLORS ------------------------------*/
+html {
+    --shadow: #000;
+
+    --nav: #444;
+    --navtxt: #FFF;
+
+    --btn: #FFF;
+    --btntxt: #000;
+    --btnhover: lime;
+
+    --main: #EEE;
+
+    --slider: #CCC;
+    --sliderbtn: #FFF;
+    --slideractive: lime;
+}
+
+
+
+/* ------------------------------- HTML -------------------------------*/
+* {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+}
+
+footer {
+    position: absolute;
+
+    bottom: 15px;
+    left: 15px;
+}
+
+
+
+/* ---------------------------- NAVIGATION ----------------------------*/
+#sidenav {
+    height: 100%;
+    width: 300px;
+
+    overflow-x: hidden;
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    background-color: var(--nav);
+    color: var(--navtxt);
+
+    box-shadow: 0 0 2px var(--shadow);
+}
+
+#navtop {
+    height: 50px;
+
+    padding-left: 10px;
+    padding-right: 10px;
+    
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+
+    box-shadow: 0 0 2px var(--shadow);
+}
+
+#navtop a {
+    height: auto;
+    margin: auto;
+    padding: 0;
+    text-decoration: none;
+}
+
+#navtop a.icon:hover {
+    filter: invert(1);
+}
+
+#navtop a.btn {
+    background-color: var(--btn);
+    color: var(--btntxt);
+    text-decoration: none;
+}
+
+#navtop a.btn:hover{
+    background-color: var(--btnhover);
+}
+
+
+
+/* ------------------------------- MAIN -------------------------------*/
+#main {
+    height: 100%;
+    margin-left: 300px;
+
+    background-color: var(--main);
+}
+
+
+
+/* ------------------------------ HEADER ------------------------------*/
+header {
+    height: 50px;
+    font-size: 28px;
+
+    padding-left: 15px;
+
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+
+    box-shadow: 0 0 2px var(--shadow);
+}
+
+#headerbuttons {
+    margin-left: auto;
+    margin-right: 15px;
+}
+
+#headerbuttons a {
+    text-decoration: none;
+}
+
+
+
+/* -------------------------- DARKMODE SWITCH -------------------------*/
+.switch {
+    display: inline-block;
+    position: relative;
+
+    height: 28px;
+    width: 48px;
+}
+
+.switch input {
+    opacity: 0;
+
+    height: 0;
+    width: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    background-color: var(--slider);
+
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+
+    background-color: var(--sliderbtn);
+
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: var(--slideractive);
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(20px);
+    -ms-transform: translateX(20px);
+    transform: translateX(20px);
+}
+
+
+
+/* ------------------------------- MAIN -------------------------------*/
+#content {
+    padding-left: 15px;
+    padding-top: 15px;
+}
+
+
+/* --------------------------- MISCELANEOUS ---------------------------*/
+span + span {
+    margin-left: 10px;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+
+    padding-bottom: 10px;
+    margin-bottom: -10px;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: var(--main);
+    min-width: 160px;
+    box-shadow: 0 0 2px var(--shadow);
+    z-index: 2;
+
+    margin-top: 10px;
+    margin-left: -10px;
+}
+
+.dropdown-content a {
+    color: var(--btntxt);
+    padding: 4px 4px !important;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: var(--btnhover);
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
