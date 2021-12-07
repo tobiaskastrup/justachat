@@ -9,6 +9,8 @@ with sessions.Session() as session:
     rocket = RocketChat(
         user, password, server_url='http://justa.chat:3000/', session=session)
 
-    recipient_username = input("Input username: ")
-    
-    pprint(rocket.im_create(recipient_username).json())
+def createIM():
+    recipient_username = input("Input username of the person you want to chat with: ")
+    rocket.im_create(recipient_username).json()
+
+createIM()
