@@ -159,6 +159,16 @@ def printIMMessages():
             for xyz in reversed(msgliste):
                 print(f'{xyz["u"]["username"]}: {xyz["msg"]}')
 
+# Mangler Password sikkerhed og "username already exists"
+def updateUserInfo():
+    userobj = rocket.me().json()
+    userID = userobj["_id"]
+    new_email = input("Update email: ")
+    new_name = input("Update name: ")
+    new_password = input("Update password: ")
+    new_username = input("Update username: ")
+    rocket.users_update(userID, email=new_email, name=new_name, password= new_password, username=new_username).json()
+
 #### TEST AF FUNKTIONER ####
 createSession(nickname, password)
 print(getUserID("christian"))
