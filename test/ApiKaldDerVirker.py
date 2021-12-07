@@ -5,7 +5,7 @@ from rocketchat_API.rocketchat import RocketChat
 
 with sessions.Session() as session:
     rocket = RocketChat('christian', 'SuperStrong123!', server_url='http://justa.chat:3000/', session=session)
-    pprint(rocket.im_open('976W3MHhz6mFTSL6zuDcRZEd8af9tWBdyo').json())
+    pprint(rocket.im_list_everyone().json())
 
 ####################################################################################################################################
 # Lists Own User Info, pprint(rocket.me().json())
