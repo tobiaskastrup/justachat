@@ -2,7 +2,7 @@
 from requests import sessions
 from pprint import pprint
 from rocketchat_API.rocketchat import RocketChat
-
+import re
 # nickname = input("Username: ")
 # password = input("Password: ")
 
@@ -59,7 +59,7 @@ def choosePublicRoom(_channelsnames, _channelsid):
     
     return i, _channelsid[i-1]
 
-def printMessages(RoomNo, _publicRoomID, _msgCount):
+def printChannelMessages(RoomNo, _publicRoomID, _msgCount):
     msg = rocket.channels_history(_publicRoomID, count=_msgCount).json()
 
     # Itterer igennem beskeder fra rummet
@@ -69,6 +69,95 @@ def printMessages(RoomNo, _publicRoomID, _msgCount):
         if type(msgliste) is list:
             for xyz in reversed(msgliste):
                 print(f'{xyz["u"]["username"]}:     {xyz["msg"]}')
+
+def createIM():
+    recipient_username = input("Input username of the person you want to chat with: ")
+    rocket.im_create(recipient_username).json()
+
+# Mangler "username already exists check"
+def createNewUser():
+    pattern = "^.*(?=.{8,})(?=.*\d)(?=.*[a-zøæå])(?=.*[A-ZÆØÅ)(?=.*[$&+,:;=?@#|'<>.-^*()%!_]).*$"
+    nickname = input("Type your desired username: ")
+    username = input("Type your first name: ")
+    # Checker om password er stærkt nok
+    while True:
+        password = input("Type a password here: ")
+        result = re.findall(pattern, password)
+        if (result):
+            print("Password is okay!")
+            break
+        else:
+            print("Password doesn't meet the requirments")
+
+
+
+    with sessions.Session() as session:
+        rocket = RocketChat('UserCreateAdmin', 'SuperStrong123!',server_url='http://justa.chat:3000/', session=session)
+        rocket.users_create(username+'@justa.chat', username, password, nickname).json()
+
+def deleteUser():
+    user_id = input("Type the name of the user to be deleted: ")
+    delobj = rocket.users_info(user_id).json()
+    if delobj["user"] is not None:
+        userID = delobj["user"]["_id"]
+        pprint(rocket.users_delete(userID))
+
+# Henter user ID for brugeren
+def getUserID():
+    userobj = rocket.me().json()
+    if userobj["_id"] is not None:
+        userID = userobj["_id"]
+        myusername = userobj["username"]
+
+def getAvailableIM():
+    imsobj = rocket.im_list().json()
+
+    # Henter mulige rum
+    imsnames = []
+    imsid = []
+    if "ims" in imsobj:
+        imslist = imsobj["ims"]
+        if type(imslist) is list:
+            for xyz in imslist:
+                usernameobj = xyz["usernames"]
+                for usernames in usernameobj:
+                    if usernames != myusername:
+                        imsnames.append(usernames)
+                        imsid.append(xyz["_id"])
+    
+    return imsnames, imsid
+    
+def chooseIMRoom():
+    # Printer mulige rum
+    print("Choose a room to connect:")
+    n=1
+    for rooms in imsnames:
+        print(f'{n}: {rooms}')
+        n = n+1
+    
+    # Vælg et rum
+    while True:
+        try:
+            i = int(input(f"Vælg et nummer mellem 1 og {len(imsnames)}: "))
+            break
+        except ValueError:
+            print('\nYou did not enter a valid integer')
+        if i < len(imsnames):
+            print("\nFail")
+        elif i <= 1:
+            print("\nFail")
+
+def printIMMessages():
+    # Henter beskeder fra valgte rum
+    msg = rocket.im_history(imsid[i-1], count=10).json()
+
+    # Itterer igennem beskeder fra rummet
+    print(f"\n<<< Beskeder fra {imsnames[i-1]} >>>")
+    if "messages" in msg:
+        msgliste = msg["messages"]
+        if type(msgliste) is list:
+            for xyz in reversed(msgliste):
+                print(f'{xyz["u"]["username"]}: {xyz["msg"]}')
 
 #### TEST AF FUNKTIONER ####
 createSession(nickname, password)

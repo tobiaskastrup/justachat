@@ -10,12 +10,15 @@ with sessions.Session() as session:
     # Opretter en session med login oplysninger
     rocket = RocketChat(user, password, server_url='http://justa.chat:3000', session=session)
 
-    # Henter user ID for brugeren
+
+# Henter user ID for brugeren
+def getUserID():
     userobj = rocket.me().json()
     if userobj["_id"] is not None:
         userID = userobj["_id"]
         myusername = userobj["username"]
 
+def getAvailableIM():
     imsobj = rocket.im_list().json()
 
     # Henter mulige rum
@@ -30,35 +33,39 @@ with sessions.Session() as session:
                     if usernames != myusername:
                         imsnames.append(usernames)
                         imsid.append(xyz["_id"])
-        
-        # Printer mulige rum
-        print("Choose a room to connect:")
-        n=1
-        for rooms in imsnames:
-            print(f'{n}: {rooms}')
-            n = n+1
-        
-        # Vælg et rum
-        while True:
-            try:
-                i = int(input(f"Vælg et nummer mellem 1 og {len(imsnames)}: "))
-                break
-            except ValueError:
-                print('\nYou did not enter a valid integer')
-            if i < len(imsnames):
-                print("\nFail")
-            elif i <= 1:
-                print("\nFail")
-        
-        # Henter beskeder fra valgte rum
-        msg = rocket.im_history(imsid[i-1], count=10).json()
+    
+    return imsnames, imsid
+    
+def chooseIMRoom():
+    # Printer mulige rum
+    print("Choose a room to connect:")
+    n=1
+    for rooms in imsnames:
+        print(f'{n}: {rooms}')
+        n = n+1
+    
+    # Vælg et rum
+    while True:
+        try:
+            i = int(input(f"Vælg et nummer mellem 1 og {len(imsnames)}: "))
+            break
+        except ValueError:
+            print('\nYou did not enter a valid integer')
+        if i < len(imsnames):
+            print("\nFail")
+        elif i <= 1:
+            print("\nFail")
 
-        # Itterer igennem beskeder fra rummet
-        print(f"\n<<< Beskeder fra {imsnames[i-1]} >>>")
-        if "messages" in msg:
-            msgliste = msg["messages"]
-            if type(msgliste) is list:
-                for xyz in reversed(msgliste):
-                    print(f'{xyz["u"]["username"]}: {xyz["msg"]}')
+def printIMMessages():
+    # Henter beskeder fra valgte rum
+    msg = rocket.im_history(imsid[i-1], count=10).json()
+
+    # Itterer igennem beskeder fra rummet
+    print(f"\n<<< Beskeder fra {imsnames[i-1]} >>>")
+    if "messages" in msg:
+        msgliste = msg["messages"]
+        if type(msgliste) is list:
+            for xyz in reversed(msgliste):
+                print(f'{xyz["u"]["username"]}: {xyz["msg"]}')
 
         
