@@ -3,7 +3,7 @@
 #########################################################################
 
 from flask import Flask, render_template #, redirect, url_for, request
-import mysql.connector
+# import mysql.connector
 # import random
 # import smtplib
 # import string
