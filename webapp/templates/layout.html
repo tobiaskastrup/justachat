@@ -14,41 +14,45 @@
     </head>
 
     <body>
-        <div id="sidenav">
-            <div id="navtop">
-                {% if g.user %} <!-- "if not g.user", can remove 'not' to simulate login -->
-                    <a href="/login">Log In / Register</a>
-                {% else %}
-                    <div class="dropdown">
-                        <a href="/profile" class="icon dropbtn">
-                            <img src="../static/images/user.png" height="28">
-                        </a>
+        <nav>
+            <header>
+                <div class="container">
+                    {% if g.user %} <!-- "if not g.user", can remove 'not' to simulate login -->
+                        <a href="/login">Log In / Register</a>
+                    {% else %}
+                        <div class="wrapper">
+                            <div class="dropdown">
+                                <a href="/profile" class="icon dropbtn">
+                                    <img src="../static/images/user.png" class="thumbnail">
+                                </a>
 
-                        <div class="dropdown-content">
-                            <a href="/settings">Settings</a>
-                            <a href="">Log out</a>
+                                <div class="dropdown-content">
+                                    <a href="/settings">Settings</a>
+                                    <a href="">Log out</a>
+                                </div>
+                            </div>
                         </div>
-                    </div>
 
-                    <div>
-                        <a href="" class="icon">
-                            <img src="../static/images/users.png" height="28">
-                        </a> <!-- Dropdown friendlist with option to add friend? -->
+                        <div class="wrapper">
+                            <a href="" class="icon">
+                                <img src="../static/images/users.png" class="thumbnail">
+                            </a> <!-- Dropdown friendlist with option to add friend? -->
 
-                        <a href="/" class="icon">
-                            <img src="../static/images/home.png" height="28">
-                        </a> <!-- Home -->
+                            <a href="/" class="icon">
+                                <img src="../static/images/home.png" class="thumbnail">
+                            </a> <!-- Home -->
 
-                        <a href="" class="icon">
-                            <img src="../static/images/search.png" height="28">
-                        </a> <!-- Search -->
+                            <a href="" class="icon">
+                                <img src="../static/images/search.png" class="thumbnail">
+                            </a> <!-- Search -->
 
-                        <a href="" class="icon"> <!-- Create new -->
-                            <img src="../static/images/create.png" height="28">
-                        </a>
-                    </div>
-                {% endif %}
-            </div>
+                            <a href="" class="icon"> <!-- Create new -->
+                                <img src="../static/images/create.png" class="thumbnail">
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </header>
 
             <div id="navitems">
                 {% if not g.user %}
@@ -65,35 +69,38 @@
             <footer>
                 <p>Just a Chat</p>
             </footer>
-        </div>
+        </nav>
 
-        <div id="main">
+        <div class="main">
             <header>
-                {% block headerthumbnail %}{% endblock %}
-                <span></span><span></span>
-                {% block header %}{% endblock %}
+                <div class="container">
+                    <div class="wrapper">
+                        <img src="{% block headerthumbnail %}{% endblock %}" class="thumbnail">
+                        <h1>{% block header %}{% endblock %}</h1>
+                    </div>
 
-                <div id="headerbuttons">
-                    <a href="" class="icon"> <!-- Room Information -->
-                        <img src="../static/images/info.png" height="28">
-                    </a>
+                    <div class="wrapper">
+                        <a href="" class="icon"> <!-- Room Information -->
+                            <img src="../static/images/info.png" class="thumbnail">
+                        </a>
 
-                    <a href="" class="icon"> <!-- Members -->
-                        <img src="../static/images/users.png" height="28">
-                    </a>
+                        <a href="" class="icon"> <!-- Members -->
+                            <img src="../static/images/users.png" class="thumbnail">
+                        </a>
 
-                    <a href="" class="icon"> <!-- Search in messages -->
-                        <img src="../static/images/search.png" height="28">
-                    </a>
+                        <a href="" class="icon"> <!-- Search in messages -->
+                            <img src="../static/images/search.png" class="thumbnail">
+                        </a>
 
-                    <a href="" class="icon"> <!-- Options -->
-                        <img src="../static/images/settings.png" height="28">
-                    </a>
+                        <a href="" class="icon"> <!-- Options -->
+                            <img src="../static/images/settings.png" class="thumbnail">
+                        </a>
 
-                    <label class="switch" id="darkmode_toggle">
-                        <input type="checkbox">
-                        <span class="slider"></span>
-                    </label>
+                        <label class="switch" id="darkmode_toggle">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
                 </div>
             </header>
 
