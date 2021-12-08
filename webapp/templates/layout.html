@@ -8,6 +8,7 @@
         <meta name="author" content="Studiegruppe 5 - ITT 3A e2021">
         <meta name="viewport" content="width=device-width, initial-scale=1">
     
+        <link rel="icon" href="../static/images/create.png">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/light-theme.css') }}" id="stylesheet_toggle">
     
         <script src="{{ url_for('static', filename='js/darkmode.js') }}"></script>
@@ -54,15 +55,16 @@
                 </div>
             </header>
 
-            <div id="navitems">
-                {% if not g.user %}
+            <div class="navitems">
+                {% if not g.user %} <!-- "if not g.user", can remove 'not' to simulate login -->
+                    <a href="/phd">Placeholder discussion</a>
                 {% else %}
-                <!-- Chatrooms go here -->
-                <!--
-                for X in Y
-                <a value="{{ X }}">{{ X }}</a>
-                endfor
-                -->
+                    <!-- Chatrooms go here -->
+                    <!--
+                    for X in Y
+                    <a value="{{ X }}">{{ X }}</a>
+                    endfor
+                    -->
                 {% endif %}
             </div>
 

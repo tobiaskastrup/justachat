@@ -36,6 +36,11 @@ def layout():
     # Web page code
     return render_template("layout.html")
 
+@app.route("/phd")
+def phd():
+    # Web page code
+    return render_template("phd.html")
+
 # Home Page
 @app.route("/")
 def home():

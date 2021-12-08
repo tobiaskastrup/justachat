@@ -154,6 +154,10 @@ nav {
     margin: 0 0.1rem;
 }
 
+.content {
+    padding: 0.25rem 0.75rem;
+}
+
 .icon,
 .thumbnail {
     height: 1.75rem;
@@ -163,11 +167,9 @@ nav {
     transform: scale(1.1);
 }
 
-/*
-.content {
-
+.navitems > a {
+    color: var(--clr-white);
 }
-*/
 
 /* -------------------------- Switch Button -------------------------- */
 .switch {
