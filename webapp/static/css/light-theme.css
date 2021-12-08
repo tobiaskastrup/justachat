@@ -154,6 +154,7 @@ nav {
     margin: 0 0.1rem;
 }
 
+.icon,
 .thumbnail {
     height: 1.75rem;
 }
@@ -161,6 +162,12 @@ nav {
 .thumbnail:hover {
     transform: scale(1.1);
 }
+
+/*
+.content {
+
+}
+*/
 
 /* -------------------------- Switch Button -------------------------- */
 .switch {
@@ -226,13 +233,13 @@ input:checked + .slider:before {
     position: absolute;
     z-index: 2;
 
-    margin-top: 0.4rem;
-    margin-left: -0.5rem;
+    margin-top: 0.65rem;
+    margin-left: -0.6rem;
 }
 
 .dropdown-content > a {
     display: block;
-    padding: 0.25rem 0.25rem; /* remove important? */
+    padding: 0.5rem 0.5rem; /* remove important? */
     text-decoration: none;
 }
 

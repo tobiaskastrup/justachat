@@ -75,24 +75,24 @@
             <header>
                 <div class="container">
                     <div class="wrapper">
-                        <img src="{% block headerthumbnail %}{% endblock %}" class="thumbnail">
+                        <img src="{% block headerthumbnail %}{% endblock %}" class="icon">
                         <h1>{% block header %}{% endblock %}</h1>
                     </div>
 
                     <div class="wrapper">
-                        <a href="" class="icon"> <!-- Room Information -->
+                        <a href=""> <!-- Room Information -->
                             <img src="../static/images/info.png" class="thumbnail">
                         </a>
 
-                        <a href="" class="icon"> <!-- Members -->
+                        <a href=""> <!-- Members -->
                             <img src="../static/images/users.png" class="thumbnail">
                         </a>
 
-                        <a href="" class="icon"> <!-- Search in messages -->
+                        <a href=""> <!-- Search in messages -->
                             <img src="../static/images/search.png" class="thumbnail">
                         </a>
 
-                        <a href="" class="icon"> <!-- Options -->
+                        <a href=""> <!-- Options -->
                             <img src="../static/images/settings.png" class="thumbnail">
                         </a>
 
@@ -104,9 +104,11 @@
                 </div>
             </header>
 
-            <div id="content">
-                {% block body %}{% endblock %}
-                <!-- Use include for automating multiple chatrooms -->
+            <div class="container">
+                <div class="content">
+                    {% block body %}{% endblock %}
+                    <!-- Use include for automating multiple chatrooms -->
+                </div>
             </div>
         </div>
     </body>
