@@ -31,6 +31,8 @@ app = Flask(__name__)
 #########################################################################
 
 # Placeholder: This is a web page structure reference
+# layout.html is base layout all other pages refer to
+# newpage.html is quick pasteable template for creating a new page
 @app.route("/behindthescenes")
 def layout():
     # Web page code
