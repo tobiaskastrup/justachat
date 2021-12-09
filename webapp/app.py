@@ -56,6 +56,10 @@ def dashboard():
 def settings():
     return render_template("settings.html")
 
+# Signup
+@app.route("/signup")
+def settings():
+    return render_template("signup.html")
 
 
 #########################################################################

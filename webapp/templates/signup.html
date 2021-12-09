@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    new page
+{% endblock %}
+
+{% block headerthumbnail %}
+    ../static/images/home.png
+{% endblock %}
+
+{% block header %}
+    new page
+{% endblock %}
+
+{% block body %}
+<form action="/signup" method="post">
+        
+    <div class="container">
+        
+        <label for="uname"><b>DesiredUsername</b></label>
+        <input type="text" placeholder="Enter Desired Username" name="uname" required> 
+    </div>
+    <div class="container">
+        
+        <label for="email"><b>Your Email</b></label>
+        <input type="text" placeholder="Enter your email" name="email" required> 
+    </div>
+    <div class ="container">
+        <label for="psw"><b>DesiredPassword</b></label>
+        <input type="password" placeholder="Enter your desired Password" name="psw" required>
+    </div>
+    <div class ="container">
+        <label for="psw"><b>DesiredPasswordAgain</b></label>
+        <input type="password" placeholder="Repeat your desired Password " name="psw" required>
+    </div>
+    <div class="container">
+        <button type="submit">signup</button>
+    </div>
+    <div class="container" style="background-color:#f1f1f1">
+        <button type="button" class="cancelbtn">Cancel</button>
+    </div>
+</form>
+{% endblock %}
