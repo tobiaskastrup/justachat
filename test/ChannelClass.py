@@ -104,7 +104,7 @@ class PublicChannels:
         return newChannelNameResponse["success"]
 
     def printMessages(self, chosenPrivateChannel, msgCount):
-        '''Printer beskeder fra en channel'''s
+        '''Printer beskeder fra en channel'''
         msg = self.rocket.channels_history(self.myRooms[chosenPrivateChannel], count=msgCount).json()
 
         # Itterer igennem beskeder fra rummet

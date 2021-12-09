@@ -2,7 +2,7 @@ from requests import sessions
 from pprint import pprint
 from rocketchat_API.rocketchat import RocketChat
 from MyUserClass import MyUser
-from PublicChannelClass import PublicChannels
+from ChannelClass import PublicChannels
 from OtherUsersClass import OtherUsers
 
 # nickname = input("Username: ")
