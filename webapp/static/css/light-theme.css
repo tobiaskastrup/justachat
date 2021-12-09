@@ -2,6 +2,8 @@
 /*                              VARIABLES                              */
 /* ------------------------------------------------------------------- */
 
+/* Defined variables, used for standardizing stylesheet */
+
 :root {
     /* Colors */
     --clr-black: #000;
@@ -107,27 +109,32 @@ turned on motion-sickness reduction */
     font-size: var(--fs-small);
 }
 
+/* Style header one */
 h1 {
     font-size: var(--fs-big);
     font-weight: normal;
 }
 
+/* Hide body scrollbar, we will put these inside containers later */
 body {
     overflow: hidden;
 }
 
+/* Align content center, set header height, z- index above nav and main */
 header {
     align-items: center;
     height: 3rem;
     line-height: 1;
-    z-index: 3;
+    z-index: 2;
 }
 
+/* Force bottom of page */
 footer {
     position: absolute;
     bottom: 0;
 }
 
+/* z-index above main, below headers, fix position */
 nav {
     height: 100vh;
     position: fixed;
@@ -135,51 +142,61 @@ nav {
     z-index: 1;
 }
 
+/* position next to nav instead of under */
 .main {
     margin-left: 18rem;
     position: relative;
 }
 
+/* holds wrappers and other elements, justifies content */
 .container {
     display: flex;
     justify-content: space-between;
     padding: 0.5rem;
 }
 
+/* Holds elements */
 .wrapper {
     display: flex;
     padding: 0;
 }
 
+/* Adds horizontal margin between elements inside wrapper */
 .wrapper > * {
     margin: 0 0.1rem;
 }
 
+/* Main page content */
 .content {
     padding: 0.25rem 0.75rem;
 }
 
+/* Fixed height for icons and thumbnails */
 .icon,
 .thumbnail {
     height: 1.75rem;
 }
 
+/* Thumbnails increase in size with mouseover */
 .thumbnail:hover {
     transform: scale(1.1);
 }
 
+/* Fix position of wrapper within navtitems */
 .navitems > .wrapper {
     left: -0.13rem;
     position: relative;
     width: 19rem;
 }
 
+/* Styls <a href=""></a> within navitems */
 .navitems a {
     padding: 1rem;
     text-decoration: none;
     width: 18rem;
 }
 
+/* Adds extra padding */
 .extrapadding {
     padding: 1rem;
 }
@@ -187,6 +204,11 @@ nav {
 
 
 /* -------------------------- Switch Button -------------------------- */
+
+/* Switch-style checkbox button, primarily used to switch between light
+and dark theme */
+
+/* Container and hitbox for switch */
 .switch {
     display: inline-block;
     position: relative;
@@ -195,6 +217,7 @@ nav {
     width: 3rem;
 }
 
+/* Hides the checkbox */
 .switch > input {
     opacity: 0;
 
@@ -202,6 +225,7 @@ nav {
     width: 0;
 }
 
+/* Slider with transition animation */
 .slider {
     position: absolute;
     cursor: pointer;
@@ -215,6 +239,7 @@ nav {
     transition: 400ms;
 }
 
+/* Positioning for unchecked state */
 .slider:before{
     position: absolute;
     content: "";
@@ -229,6 +254,7 @@ nav {
     transition: 400ms;
 }
 
+/* Positioning for checked state */
 input:checked + .slider:before {
     -webkit-transform: translateX(1.25rem);
     -ms-transform: translateX(1.25rem);
@@ -236,14 +262,17 @@ input:checked + .slider:before {
 }
 
 /* -------------------------- Dropdown Menu -------------------------- */
+
+/* Dropdown element */
 .dropdown {
     display: inline-block;
     position: relative;
 
-    margin-bottom: -0.4rem;
-    padding-bottom: 0.4rem;
+    margin-bottom: -1rem;
+    padding-bottom: 1rem;
 }
 
+/* Hides dropdown content by default */
 .dropdown-content {
     display: none;
     min-width: 10rem;
@@ -254,12 +283,14 @@ input:checked + .slider:before {
     margin-left: -0.6rem;
 }
 
+/* Styles attributes (<a></a>) inside dropdown content */
 .dropdown-content > a {
     display: block;
-    padding: 0.5rem 0.5rem; /* remove important? */
+    padding: 0.5rem 0.5rem;
     text-decoration: none;
 }
 
+/* Unhides dropdown content when hovering dropdown element */
 .dropdown:hover > .dropdown-content {
     display: block;
 }
@@ -269,6 +300,9 @@ input:checked + .slider:before {
 /* ------------------------------------------------------------------- */
 /*                               COLORS                                */
 /* ------------------------------------------------------------------- */
+
+/* All color references. Used for differentiating between light-theme
+and dark-theme stylesheets */
 
 body {
     background: var(--clr-almostwhite);
