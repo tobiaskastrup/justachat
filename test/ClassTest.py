@@ -5,9 +5,6 @@ from MyUserClass import MyUser
 from ChannelClass import PublicChannels
 from OtherUsersClass import OtherUsers
 
-# nickname = input("Username: ")
-# password = input("Password: ")
-
 nickname = "christian"
 password = "SuperStrong123!"
 
