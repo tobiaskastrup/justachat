@@ -5,13 +5,13 @@ from rocketchat_API.rocketchat import RocketChat
 
 with sessions.Session() as session:
     rocket = RocketChat('christian', 'SuperStrong123!', server_url='http://justa.chat:3000/', session=session)
-    pprint(rocket.channels_close("gj6Hihk6dDyTYv8cY").json())
+    pprint(rocket.service_configurations().json())
     #pprint(rocket.channels_list().json())
 
 ####################################################################################################################################
-# Lists Own User Info, pprint(rocket.me().json())
-# Send Message IM/CHANNEL/DISCUSSION, pprint(rocket.chat_post_message('besked', channel='room_id').json())
-# Send No-Text Message, pprint(rocket.chat_post_message(None, 'GENERAL').json())
+# Lists Own User Info, pprint(rocket.me().json()) Ligger i MyUserClass
+# Send Message IM/CHANNEL/DISCUSSION, pprint(rocket.chat_post_message('besked', channel='room_id').json()) Mangler
+# Send No-Text Message, pprint(rocket.chat_post_message(None, 'room_name').json())
 # Pin Message, pprint(rocket.chat_pin_message('message_id').json())
 # Unpin Message, pprint(rocket.chat_unpin_message('message_id').json())
 # Star a Message, pprint(rocket.chat_star_message('message_id').json())
@@ -19,17 +19,17 @@ with sessions.Session() as session:
 # Search Chat Message, pprint(rocket.chat_search('room_id', search_text='text').json())
 # Report a Message, pprint(rocket.chat_report_message('room_id', description='text').json())
 # Follow a Message, pprint(rocket.chat_follow_message('message_id').json())
-# Delete a Message, pprint(rocket.chat_delete('room_id', 'message_id').json())
+# Delete a Message, pprint(rocket.chat_delete('room_id', 'message_id').json()) Mangler
 # Get Message Read Receipts, pprint(rocket.chat_get_message_read_receipts('message_id').json())
 # Create/Start Direct Message, pprint(rocket.im_create('recipient_username').json())
-# Direct Message History, pprint(rocket.im_history('room_id').json())
-# Lists Members in Direct Message, pprint(rocket.im_members('room_id').json())
-# Lists All Direct Messages, pprint(rocket.im_list().json())
-# Lists Direct Message Counters, pprint(rocket.im_counters('room_id', 'username').json())
-# Lists Latest Direct Message in ALL DM Channels, pprint(rocket.im_list_everyone().json())
-# "Delete" a Direct Message, pprint(rocket.im_close('room_id').json())
-# "Reopen" a Direct Message, pprint(rocket.im_open('room_id').json())
-# Create New Channel, pprint(rocket.channels_create('new_channel_name').json())
+# Direct Message History, pprint(rocket.im_history('room_id').json()) Mangler i IM
+# Lists Members in Direct Message, pprint(rocket.im_members('room_id').json()) Mangler i IM
+# Lists All Direct Messages, pprint(rocket.im_list().json()) Mangler i IM
+# Lists Direct Message Counters, pprint(rocket.im_counters('room_id', 'username').json()) Mangler i IM
+# Lists Latest Direct Message in ALL DM Channels, pprint(rocket.im_list_everyone().json()) Mangler i IM
+# "Delete" a Direct Message, pprint(rocket.im_close('room_id').json()) Mangler i IM
+# "Reopen" a Direct Message, pprint(rocket.im_open('room_id').json()) Mangler i IM
+# Create New Channel, pprint(rocket.channels_create('new_channel_name').json()) Lavet i Public 
 # Invite User to channel, pprint(rocket.channels_invite('room_id', 'recipient_user_id').json())
 # Lists All Channels, pprint(rocket.channels_list().json())
 # Lists Channels Joined, pprint(rocket.channels_list_joined().json())
