@@ -1,21 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
+    <!-- Contains meta data for the web page -->
     <head>
-        <title>Just a Chat | {% block title %}{% endblock %}</title>
+        <!-- Page tab icon and title -->
+        <link rel="icon" href="../static/images/JustaLogo.png">
+        <title>Just a Chat | {% block title %}{% endblock %}</title> 
 
+        <!-- Meta data, sets charset standard, authors, viewport, etc.-->
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="ie-edge">
         <meta name="author" content="Studiegruppe 5 - ITT 3A e2021">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-        <link rel="icon" href="../static/images/JustaLogo.png">
+        
+        <!-- Stylesheets -->
         <link rel="stylesheet" href="{{ url_for('static', filename='css/light-theme.css') }}" id="stylesheet_toggle">
     
+        <!-- Additional scripts -->
         <script src="{{ url_for('static', filename='js/darkmode.js') }}"></script>
     </head>
 
     <body>
+        <!-- Navigation bar -->
         <nav>
+            <!-- Header, contains user control buttons -->
             <header>
                 <div class="container">
                     {% if g.user %} <!-- "if not g.user", can remove 'not' to simulate login -->
@@ -55,6 +62,7 @@
                 </div>
             </header>
 
+            <!-- Navigation items, contains chatrooms and private messages -->
             <div class="navitems">
                 <div class="wrapper">
                     {% if not g.user %} <!-- "if not g.user", can remove 'not' to simulate login -->
@@ -70,6 +78,7 @@
                 </div>
             </div>
 
+            <!-- Footer, contains website logo -->
             <footer>
                 <div class="container extrapadding">
                     <img src="../static/images/JustaChat_Alt_Lime.png" height="50">
@@ -77,14 +86,18 @@
             </footer>
         </nav>
 
+        <!-- Main section of the page, contains page content -->
         <div class="main">
+            <!-- Header, contains page header, chatroom buttons and darkmode switch -->
             <header>
                 <div class="container">
+                    <!-- Header title and icon -->
                     <div class="wrapper">
                         <img src="{% block headerthumbnail %}{% endblock %}" class="icon">
                         <h1>{% block header %}{% endblock %}</h1>
                     </div>
 
+                    <!-- Chatroom buttons -->
                     <div class="wrapper">
                         <a href=""> <!-- Room Information -->
                             <img src="../static/images/info.png" class="thumbnail">
@@ -102,6 +115,7 @@
                             <img src="../static/images/settings.png" class="thumbnail">
                         </a>
 
+                        <!-- Darkmode switch, ID used for darkmode.js -->
                         <label class="switch" id="darkmode_toggle">
                             <input type="checkbox">
                             <span class="slider"></span>
@@ -110,6 +124,7 @@
                 </div>
             </header>
 
+            <!-- Container for main page content -->
             <div class="container">
                 <div class="content">
                     {% block body %}{% endblock %}
