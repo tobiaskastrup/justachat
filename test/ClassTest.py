@@ -14,18 +14,10 @@ def createSession(_nickname, _password):
         rocket = RocketChat(_nickname, _password, server_url='http://justa.chat:3000/', session=session)
         
 
-def getAllUsers(self):
-    allUserObj = self.rocket.users_list().json().json()
-        if allUserObj["user"] is not None:
-            self.status = allUserObj["user"]["status"]
-            self.statusText = allUserObj["user"]['statusText']
-            self.id = allUserObj["user"]["_id"]
-            self.email = allUserObj["user"]["emails"]
-            self.roles = allUserObj["user"]["roles"]
-            self.active = allUserObj["user"]["active"]
-
 createSession(nickname, password)
 myUser = MyUser(username=nickname, rocket=rocket)
+
+pprint(myUser.getAllUsers())
 
 # myUser.setUserStatus("Bla", None)  
 # print(myUser.getStatusText()) 
