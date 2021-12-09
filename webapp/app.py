@@ -63,7 +63,7 @@ def settings():
 
 # Signup
 @app.route("/signup")
-def settings():
+def signup():
     return render_template("signup.html")
 
 

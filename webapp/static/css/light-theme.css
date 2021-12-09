@@ -178,13 +178,9 @@ nav {
     padding: 1rem;
     text-decoration: none;
     width: 18rem;
-
-    color: var(--clr-black);
 }
 
-.navitems a:hover {
-    background: var(--clr-lime);
-}
+
 
 /* -------------------------- Switch Button -------------------------- */
 .switch {
@@ -279,6 +275,14 @@ nav {
     background: var(--clr-gray);
     color: var(--clr-white);
     box-shadow: 0 0 2px var(--clr-black);
+}
+
+.navitems a {
+    color: var(--clr-black);
+}
+
+.navitems a:hover {
+    background: var(--clr-lime);
 }
 
 header {
