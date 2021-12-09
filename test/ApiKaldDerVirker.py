@@ -2,10 +2,9 @@ from requests import sessions
 from pprint import pprint
 from rocketchat_API.rocketchat import RocketChat
 
-
 with sessions.Session() as session:
     rocket = RocketChat('christian', 'SuperStrong123!', server_url='http://justa.chat:3000/', session=session)
-    pprint(rocket.service_configurations().json())
+    pprint(rocket.users_list().json())
     #pprint(rocket.channels_list().json())
 
 ####################################################################################################################################
