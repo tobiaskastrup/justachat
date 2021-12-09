@@ -120,6 +120,7 @@ header {
     align-items: center;
     height: 3rem;
     line-height: 1;
+    z-index: 3;
 }
 
 footer {
@@ -167,8 +168,22 @@ nav {
     transform: scale(1.1);
 }
 
-.navitems > a {
-    color: var(--clr-white);
+.navitems > .wrapper {
+    left: -0.13rem;
+    position: relative;
+    width: 19rem;
+}
+
+.navitems a {
+    padding: 1rem;
+    text-decoration: none;
+    width: 18rem;
+
+    color: var(--clr-black);
+}
+
+.navitems a:hover {
+    background: var(--clr-lime);
 }
 
 /* -------------------------- Switch Button -------------------------- */
