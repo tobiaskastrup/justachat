@@ -28,12 +28,16 @@ myUser = MyUser(username=nickname, rocket=rocket)
 # print(myUser.getStatus())
 
 # tobias = OtherUsers("tobias", rocket)
-# pprint(tobias.getUsername())
+# pprint(tobias.getID())
 # myUser = MyUser(username=nickname, rocket=rocket)
 
 
-# publicRooms = PublicChannels(rocket)
+publicRooms = PublicChannels(rocket)
+cRoom = publicRooms.chooseMyRoom()
+# print(publicRooms.closeChannel(cRoom))
+
+# print(publicRooms.inviteUser(cRoom, tobias))
+
 # print(myUser.getID())
-# cRoom = publicRooms.choosePublicRoom()
 # print(publicRooms.getRoomID(cRoom))
-#publicRooms.printMessages(cRoom, 15)
+# publicRooms.printMessages(cRoom, 15)

@@ -1,11 +1,15 @@
+from pprint import pprint
+
 class PublicChannels:
 
     def __init__(self, rocket):
         self.rooms = {}
+        self.myRooms = {}
         self.rocket = rocket
-        self.updateRooms()
+        self.updatePublicRooms()
+        self.updateMyRooms()
 
-    def updateRooms(self):
+    def updatePublicRooms(self):
         channelobj = self.rocket.channels_list().json()
         
         if "channels" in channelobj:
@@ -41,12 +45,61 @@ class PublicChannels:
     def getRoomID(self, roomName) -> str:
         return self.rooms[roomName]
 
-    def printMessages(self, chosenPublicChannel, msgCount):
+    def deleteChannel(self, roomName) -> bool:
+        roomID = self.rooms[roomName]
+        deleteResponse = self.rocket.channels_delete(roomID).json()
+        return deleteResponse["success"]
 
-        msg = self.rocket.channels_history(self.rooms[chosenPublicChannel], count=msgCount).json()
+    def updateMyRooms(self) -> str:
+        mychannelobj = self.rocket.channels_list_joined().json()
+        
+        if "channels" in mychannelobj:
+            channelliste = mychannelobj["channels"]
+            if type(channelliste) is list:
+                for xyz in channelliste:
+                    self.myRooms[xyz["name"]] = xyz["_id"]
+
+    def chooseMyRoom(self):
+        # Printer mulige rum
+        print("Choose a room to connect:")
+        tempRooms = {}
+        n=1
+        for rooms in self.myRooms:
+            tempRooms[n] = rooms
+            print(f'{n}: {tempRooms[n]}')
+            n = n+1
+        
+        # Vælg et rum
+        while True:
+            try:
+                i = int(input(f"Vælg et nummer mellem 1 og {len(self.myRooms)}: "))
+                break
+            except ValueError:
+                print('\nYou did not enter a valid integer')
+            if i < len(self.myRooms):
+                print("\nFail")
+            elif i < 1:
+                print("\nFail")
+        
+        return tempRooms[i]
+
+
+    def inviteUser(self, roomName, userObject) -> bool:
+        roomID = self.myRooms[roomName]
+        userID = userObject.getID()
+        inviteResponse = self.rocket.channels_invite(roomID, userID).json()
+        return inviteResponse["success"]
+
+    def createChannel(self, newChannelName) -> bool:
+        newChannelNameResponse = self.rocket.channels_create(newChannelName).json()
+        return newChannelNameResponse["success"]
+
+    def printMessages(self, chosenPrivateChannel, msgCount):
+
+        msg = self.rocket.channels_history(self.myRooms[chosenPrivateChannel], count=msgCount).json()
 
         # Itterer igennem beskeder fra rummet
-        print(f"\n<<< Beskeder fra {chosenPublicChannel} >>>")
+        print(f"\n<<< Beskeder fra {chosenPrivateChannel} >>>")
         if "messages" in msg:
             msgliste = msg["messages"]
             if type(msgliste) is list:
