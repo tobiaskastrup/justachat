@@ -120,6 +120,7 @@ header {
     align-items: center;
     height: 3rem;
     line-height: 1;
+    z-index: 3;
 }
 
 footer {
@@ -167,9 +168,23 @@ nav {
     transform: scale(1.1);
 }
 
-.navitems > a {
-    color: var(--clr-white);
+.navitems > .wrapper {
+    left: -0.13rem;
+    position: relative;
+    width: 19rem;
 }
+
+.navitems a {
+    padding: 1rem;
+    text-decoration: none;
+    width: 18rem;
+}
+
+.extrapadding {
+    padding: 1rem;
+}
+
+
 
 /* -------------------------- Switch Button -------------------------- */
 .switch {
@@ -264,6 +279,14 @@ nav {
     background: var(--clr-gray);
     color: var(--clr-white);
     box-shadow: 0 0 2px var(--clr-black);
+}
+
+.navitems a {
+    color: var(--clr-black);
+}
+
+.navitems a:hover {
+    background: var(--clr-lime);
 }
 
 header {
