@@ -11,7 +11,7 @@ with sessions.Session() as session:
 ####################################################################################################################################
 # Lists Own User Info, pprint(rocket.me().json()) Ligger i MyUserClass
 # Send Message IM/CHANNEL/DISCUSSION, pprint(rocket.chat_post_message('besked', channel='room_id').json()) Mangler
-# Send No-Text Message, pprint(rocket.chat_post_message(None, 'room_name').json()) Mangler i IMClass
+# Send No-Text Message, pprint(rocket.chat_post_message(None, 'room_name').json()) Mangler
 # Pin Message, pprint(rocket.chat_pin_message('message_id').json()) Skal ikke implementeres endnu
 # Unpin Message, pprint(rocket.chat_unpin_message('message_id').json()) Skal ikke implementeres endnu
 # Star a Message, pprint(rocket.chat_star_message('message_id').json()) Skal ikke implementeres endnu
