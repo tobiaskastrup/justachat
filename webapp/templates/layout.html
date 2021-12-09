@@ -8,6 +8,7 @@
         <meta name="author" content="Studiegruppe 5 - ITT 3A e2021">
         <meta name="viewport" content="width=device-width, initial-scale=1">
     
+        <link rel="icon" href="../static/images/create.png">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/light-theme.css') }}" id="stylesheet_toggle">
     
         <script src="{{ url_for('static', filename='js/darkmode.js') }}"></script>
@@ -22,7 +23,7 @@
                     {% else %}
                         <div class="wrapper">
                             <div class="dropdown">
-                                <a href="/profile" class="icon dropbtn">
+                                <a href="/profile">
                                     <img src="../static/images/user.png" class="thumbnail">
                                 </a>
 
@@ -34,19 +35,19 @@
                         </div>
 
                         <div class="wrapper">
-                            <a href="" class="icon">
+                            <a href="">
                                 <img src="../static/images/users.png" class="thumbnail">
                             </a> <!-- Dropdown friendlist with option to add friend? -->
 
-                            <a href="/" class="icon">
+                            <a href="/">
                                 <img src="../static/images/home.png" class="thumbnail">
                             </a> <!-- Home -->
 
-                            <a href="" class="icon">
+                            <a href="">
                                 <img src="../static/images/search.png" class="thumbnail">
                             </a> <!-- Search -->
 
-                            <a href="" class="icon"> <!-- Create new -->
+                            <a href=""> <!-- Create new -->
                                 <img src="../static/images/create.png" class="thumbnail">
                             </a>
                         </div>
@@ -54,15 +55,16 @@
                 </div>
             </header>
 
-            <div id="navitems">
-                {% if not g.user %}
+            <div class="navitems">
+                {% if not g.user %} <!-- "if not g.user", can remove 'not' to simulate login -->
+                    <a href="/phd">Placeholder discussion</a>
                 {% else %}
-                <!-- Chatrooms go here -->
-                <!--
-                for X in Y
-                <a value="{{ X }}">{{ X }}</a>
-                endfor
-                -->
+                    <!-- Chatrooms go here -->
+                    <!--
+                    for X in Y
+                    <a value="{{ X }}">{{ X }}</a>
+                    endfor
+                    -->
                 {% endif %}
             </div>
 
@@ -75,24 +77,24 @@
             <header>
                 <div class="container">
                     <div class="wrapper">
-                        <img src="{% block headerthumbnail %}{% endblock %}" class="thumbnail">
+                        <img src="{% block headerthumbnail %}{% endblock %}" class="icon">
                         <h1>{% block header %}{% endblock %}</h1>
                     </div>
 
                     <div class="wrapper">
-                        <a href="" class="icon"> <!-- Room Information -->
+                        <a href=""> <!-- Room Information -->
                             <img src="../static/images/info.png" class="thumbnail">
                         </a>
 
-                        <a href="" class="icon"> <!-- Members -->
+                        <a href=""> <!-- Members -->
                             <img src="../static/images/users.png" class="thumbnail">
                         </a>
 
-                        <a href="" class="icon"> <!-- Search in messages -->
+                        <a href=""> <!-- Search in messages -->
                             <img src="../static/images/search.png" class="thumbnail">
                         </a>
 
-                        <a href="" class="icon"> <!-- Options -->
+                        <a href=""> <!-- Options -->
                             <img src="../static/images/settings.png" class="thumbnail">
                         </a>
 
@@ -104,9 +106,11 @@
                 </div>
             </header>
 
-            <div id="content">
-                {% block body %}{% endblock %}
-                <!-- Use include for automating multiple chatrooms -->
+            <div class="container">
+                <div class="content">
+                    {% block body %}{% endblock %}
+                    <!-- Use include for automating multiple chatrooms -->
+                </div>
             </div>
         </div>
     </body>
