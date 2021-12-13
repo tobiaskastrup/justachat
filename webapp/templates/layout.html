@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Just a Chat | {% block title %}{% endblock %}</title>
+
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="ie-edge">
+        <meta name="author" content="Studiegruppe 5 - ITT 3A e2021">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+        <link rel="icon" href="../static/images/JustaLogo.png">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/light-theme.css') }}" id="stylesheet_toggle">
+    
+        <script src="{{ url_for('static', filename='js/darkmode.js') }}"></script>
+    </head>
+
+    <body>
+        <nav>
+            <header>
+                <div class="container">
+                    {% if g.user %} <!-- "if not g.user", can remove 'not' to simulate login -->
+                        <a href="/login">Log In / Register</a>
+                    {% else %}
+                        <div class="wrapper">
+                            <div class="dropdown">
+                                <a href="/profile">
+                                    <img src="../static/images/user.png" class="thumbnail">
+                                </a>
+
+                                <div class="dropdown-content">
+                                    <a href="/settings">Settings</a>
+                                    <a href="">Log out</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="wrapper">
+                            <a href="">
+                                <img src="../static/images/users.png" class="thumbnail">
+                            </a> <!-- Dropdown friendlist with option to add friend? -->
+
+                            <a href="/">
+                                <img src="../static/images/home.png" class="thumbnail">
+                            </a> <!-- Home -->
+
+                            <a href="">
+                                <img src="../static/images/search.png" class="thumbnail">
+                            </a> <!-- Search -->
+
+                            <a href=""> <!-- Create new -->
+                                <img src="../static/images/create.png" class="thumbnail">
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </header>
+
+            <div class="navitems">
+                <div class="wrapper">
+                    {% if not g.user %} <!-- "if not g.user", can remove 'not' to simulate login -->
+                        <a href="/phd">Placeholder discussion</a>
+                    {% else %}
+                        <!-- Chatrooms go here -->
+                        <!--
+                        for X in Y
+                        <a value="{{ X }}">{{ X }}</a>
+                        endfor
+                        -->
+                    {% endif %}
+                </div>
+            </div>
+
+            <footer>
+                <div class="container extrapadding">
+                    <img src="../static/images/JustaChat_Alt_Lime.png" height="50">
+                </div>
+            </footer>
+        </nav>
+
+        <div class="main">
+            <header>
+                <div class="container">
+                    <div class="wrapper">
+                        <img src="{% block headerthumbnail %}{% endblock %}" class="icon">
+                        <h1>{% block header %}{% endblock %}</h1>
+                    </div>
+
+                    <div class="wrapper">
+                        <a href=""> <!-- Room Information -->
+                            <img src="../static/images/info.png" class="thumbnail">
+                        </a>
+
+                        <a href=""> <!-- Members -->
+                            <img src="../static/images/users.png" class="thumbnail">
+                        </a>
+
+                        <a href=""> <!-- Search in messages -->
+                            <img src="../static/images/search.png" class="thumbnail">
+                        </a>
+
+                        <a href=""> <!-- Options -->
+                            <img src="../static/images/settings.png" class="thumbnail">
+                        </a>
+
+                        <label class="switch" id="darkmode_toggle">
+                            <input type="checkbox">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </header>
+
+            <div class="container">
+                <div class="content">
+                    {% block body %}{% endblock %}
+                    <!-- Use include for automating multiple chatrooms -->
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

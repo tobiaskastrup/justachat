@@ -30,3 +30,4 @@ class OtherUsers:
 
     def getUsername(self) -> str:
         return self.username
+        

@@ -114,3 +114,4 @@ class PublicChannels:
             if type(msgliste) is list:
                 for xyz in reversed(msgliste):
                     print(f'{xyz["u"]["username"]}:     {xyz["msg"]}')
+
