@@ -20,24 +20,42 @@ def createSession(_nickname, _password):
         #rocket.users_set_status())
         
 
+def createAnonSession():
+    with sessions.Session() as session:
+        global anonrocket
+        anonrocket = RocketChat(server_url='http://justa.chat:3000/', session=session)
+
+# createAnonSession()
+# anonrocket.users_register("peter@justa.chat", "Peter P", "Mahman", "peter")
+
+### OBJEKTER ###
 createSession(nickname, password)
 myUser = MyUser(username=nickname, rocket=rocket)
+tobias = OtherUsers("tobias", rocket)
+im_room = IM(rocket, myUser.getUsername())
+publicRooms = PublicChannels(rocket)
 
 # myUser.setUserStatus("Bla", None)  
 # print(myUser.getStatusText()) 
 # print(myUser.getStatus())
 
-tobias = OtherUsers("tobias", rocket)
-pprint(rocket.im_list().json())
+
+### USER TESTS ###
 # pprint(tobias.getID())
 # myUser = MyUser(username=nickname, rocket=rocket)
 
-# im_room = IM(rocket, myUser.getUsername())
+
+### IM TESTS ###
+# chosenIMRoom = im_room.chooseMyRoom()
+# sendMsg = input("Hvad vil du sende: ")
+# im_room.sendNewMsg(chosenIMRoom, sendMsg)
+# print(im_room.checkForNewMsg())
+
 # chosenIMRoom = im_room.chooseMyRoom()
 # print(im_room.deleteIMChannel(chosenIMRoom))
 
 
-publicRooms = PublicChannels(rocket)
+
 #cRoom = publicRooms.chooseMyRoom()
 # print(publicRooms.closeChannel(cRoom))
 
