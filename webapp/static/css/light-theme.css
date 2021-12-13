@@ -1,0 +1,315 @@
+/* ------------------------------------------------------------------- */
+/*                              VARIABLES                              */
+/* ------------------------------------------------------------------- */
+
+:root {
+    /* Colors */
+    --clr-black: #000;
+    --clr-darkgray: #333;
+    --clr-gray: #444;
+    --clr-lightgray: #CCC;
+    --clr-almostwhite: #EEE;
+    --clr-white: #FFF;
+
+    --clr-green: #008000;
+    --clr-lime: #00FF00;
+
+    /* Font size */
+    --fs-big: 1.75rem;
+    --fs-small: 1rem;
+}
+
+
+
+/* ------------------------------------------------------------------- */
+/*                               DEFAULTS                              */
+/* ------------------------------------------------------------------- */
+
+/* Box sizing rules */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* Remove default margin */
+body,
+h1,
+h2,
+p,
+li { /* h3, h4, figure, figcaption, blockquote, dl, dd */
+    margin: 0;
+}
+
+/* Remove list styles on ul, ol elements within a list role */
+ul[role='list'],
+ol[role='list'] {
+    list-style: none;
+}
+
+/* Set core root defaults*/
+html:focus-within {
+    scroll-behavior: smooth;
+}
+
+/* Set core body defaults */
+body {
+    min-height: 100vh;
+    text-rendering: optimizeSpeed;
+}
+
+/* A elements that don't have a class get default styles */
+a:not([class]) {
+    text-decoration-skip-ink: auto;
+}
+
+/* Make images easier to work with */
+img,
+picture {
+    max-width: 100%;
+    display: inline-block; /* display: block; */
+}
+
+/* Inherit fonts for inputs and buttons */
+input,
+button,
+textarea,
+select {
+    font: inherit;
+}
+
+/* Remove all animations, transitions and smooth scroll for people who
+turned on motion-sickness reduction */
+@media (prefers-reduced-motion: reduce) {
+    html:focus-within {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+
+
+/* ------------------------------------------------------------------- */
+/*                                STYLE                                */
+/* ------------------------------------------------------------------- */
+
+/* Font default */
+* {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: var(--fs-small);
+}
+
+h1 {
+    font-size: var(--fs-big);
+    font-weight: normal;
+}
+
+body {
+    overflow: hidden;
+}
+
+header {
+    align-items: center;
+    height: 3rem;
+    line-height: 1;
+    z-index: 3;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+}
+
+nav {
+    height: 100vh;
+    position: fixed;
+    width: 18rem;
+    z-index: 1;
+}
+
+.main {
+    margin-left: 18rem;
+    position: relative;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem;
+}
+
+.wrapper {
+    display: flex;
+    padding: 0;
+}
+
+.wrapper > * {
+    margin: 0 0.1rem;
+}
+
+.content {
+    padding: 0.25rem 0.75rem;
+}
+
+.icon,
+.thumbnail {
+    height: 1.75rem;
+}
+
+.thumbnail:hover {
+    transform: scale(1.1);
+}
+
+.navitems > .wrapper {
+    left: -0.13rem;
+    position: relative;
+    width: 19rem;
+}
+
+.navitems a {
+    padding: 1rem;
+    text-decoration: none;
+    width: 18rem;
+}
+
+.extrapadding {
+    padding: 1rem;
+}
+
+
+
+/* -------------------------- Switch Button -------------------------- */
+.switch {
+    display: inline-block;
+    position: relative;
+
+    height: 1.75rem;
+    width: 3rem;
+}
+
+.switch > input {
+    opacity: 0;
+
+    height: 0;
+    width: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+
+    -webkit-transition: 400ms;
+    transition: 400ms;
+}
+
+.slider:before{
+    position: absolute;
+    content: "";
+
+    height: 1.25rem;
+    width: 1.25rem;
+
+    bottom: 00.25rem;
+    left: 0.25rem;
+
+    -webkit-transition: 400ms;
+    transition: 400ms;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(1.25rem);
+    -ms-transform: translateX(1.25rem);
+    transform: translateX(1.25rem)
+}
+
+/* -------------------------- Dropdown Menu -------------------------- */
+.dropdown {
+    display: inline-block;
+    position: relative;
+
+    margin-bottom: -0.4rem;
+    padding-bottom: 0.4rem;
+}
+
+.dropdown-content {
+    display: none;
+    min-width: 10rem;
+    position: absolute;
+    z-index: 2;
+
+    margin-top: 0.65rem;
+    margin-left: -0.6rem;
+}
+
+.dropdown-content > a {
+    display: block;
+    padding: 0.5rem 0.5rem; /* remove important? */
+    text-decoration: none;
+}
+
+.dropdown:hover > .dropdown-content {
+    display: block;
+}
+
+
+
+/* ------------------------------------------------------------------- */
+/*                               COLORS                                */
+/* ------------------------------------------------------------------- */
+
+body {
+    background: var(--clr-almostwhite);
+    color: var(--clr-black);
+}
+
+nav {
+    background: var(--clr-gray);
+    color: var(--clr-white);
+    box-shadow: 0 0 2px var(--clr-black);
+}
+
+.navitems a {
+    color: var(--clr-black);
+}
+
+.navitems a:hover {
+    background: var(--clr-lime);
+}
+
+header {
+    box-shadow: 0 0 2px var(--clr-black);
+}
+
+.slider {
+    background: var(--clr-lightgray);
+}
+
+.slider:before {
+    background: var(--clr-white);
+}
+
+input:checked + .slider {
+    background: var(--clr-lime);
+}
+
+.dropdown-content > a {
+    color: var(--clr-black);
+    background: var(--clr-almostwhite);
+}
+
+.dropdown-content > a:hover {
+    background: var(--clr-lime);
+}
