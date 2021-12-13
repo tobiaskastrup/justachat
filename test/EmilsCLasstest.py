@@ -23,18 +23,20 @@ def createSession(_nickname, _password):
 createSession(nickname, password)
 myUser = MyUser(username=nickname, rocket=rocket)
 
-
-
 # myUser.setUserStatus("Bla", None)  
 # print(myUser.getStatusText()) 
 # print(myUser.getStatus())
 
 tobias = OtherUsers("tobias", rocket)
+pprint(rocket.im_list().json())
 # pprint(tobias.getID())
 # myUser = MyUser(username=nickname, rocket=rocket)
 
-im_room = IM(rocket)
-im_room.createImRroom('henning')
+# im_room = IM(rocket, myUser.getUsername())
+# chosenIMRoom = im_room.chooseMyRoom()
+# print(im_room.deleteIMChannel(chosenIMRoom))
+
+
 publicRooms = PublicChannels(rocket)
 #cRoom = publicRooms.chooseMyRoom()
 # print(publicRooms.closeChannel(cRoom))

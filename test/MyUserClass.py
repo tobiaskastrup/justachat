@@ -50,22 +50,22 @@ class MyUser:
         self.rocket.users_set_status(message=status_msg, status=set_avail).json()
         self.updateUser()
 
-    def getAllUsers(self):
-        '''Tager Information fra brugere og lægger det i en Dictionary'''
-        allUserObj = self.rocket.users_list().json()
+    # def getAllUsers(self):
+    #     '''Tager Information fra brugere og lægger det i en Dictionary'''
+    #     allUserObj = self.rocket.users_list().json()
         
-        allUsers = {}
+    #     allUsers = {}
 
-        if "users" in allUserObj:
-            userList = allUserObj["users"]
-            if type(userList) is list:
-                for xyz in userList:
-                    if xyz["username"] != self.username:
-                        allUsers = {xyz["username"]: [{"Username": xyz["username"],
-                        "Id": xyz["_id"],
-                        "Status": xyz["status"],
-                        #"Email": xyz["email"]["address"],
-                        "Roles": xyz["roles"],
-                        "Active": xyz["active"]}]
-        return allUsers
+    #     if "users" in allUserObj:
+    #         userList = allUserObj["users"]
+    #         if type(userList) is list:
+    #             for xyz in userList:
+    #                 if xyz["username"] != self.username:
+    #                     allUsers = {xyz["username"]: [{"Username": xyz["username"],
+    #                     "Id": xyz["_id"],
+    #                     "Status": xyz["status"],
+    #                     #"Email": xyz["email"]["address"],
+    #                     "Roles": xyz["roles"],
+    #                     "Active": xyz["active"]}]
+    #     return allUsers
         
