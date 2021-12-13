@@ -68,3 +68,4 @@ class MyUser:
                         "Roles": xyz["roles"],
                         "Active": xyz["active"]}]
         return allUsers
+        

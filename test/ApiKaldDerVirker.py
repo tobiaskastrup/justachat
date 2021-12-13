@@ -7,6 +7,7 @@ with sessions.Session() as session:
     pprint(rocket.users_list().json())
     #pprint(rocket.channels_list().json())
 
+
 ####################################################################################################################################
 # Lists Own User Info, pprint(rocket.me().json()) Ligger i MyUserClass
 # Send Message IM/CHANNEL/DISCUSSION, pprint(rocket.chat_post_message('besked', channel='room_id').json()) Mangler

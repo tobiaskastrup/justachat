@@ -19,6 +19,7 @@ myUser = MyUser(username=nickname, rocket=rocket)
 
 pprint(myUser.getAllUsers())
 
+
 # myUser.setUserStatus("Bla", None)  
 # print(myUser.getStatusText()) 
 # print(myUser.getStatus())
