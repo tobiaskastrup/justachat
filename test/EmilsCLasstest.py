@@ -1,9 +1,9 @@
 from requests import sessions
 from pprint import pprint
 from rocketchat_API.rocketchat import RocketChat
-from MyUserClass import MyUser
+from webapp.py.MyUser import MyUser
 from ChannelClass import PublicChannels
-from OtherUsersClass import OtherUsers
+from webapp.py.OtherUsers import OtherUsers
 from IMClass import IM
 
 
