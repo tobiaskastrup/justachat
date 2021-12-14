@@ -2,12 +2,15 @@ from pprint import pprint
 
 class IM:
 
-    def __init__(self, rocket, myusername):
+    def __init__(self, rocket, myUsername):
         self.rooms = {}
         self.rocket = rocket
-        self.myusername = myusername
+        self.myUsername = myUsername
+        self.lastMsg = {}
+        self.newMsg = {}
 
         self.updateMyRooms()
+        self.checkForFirstMsg()
 
 
 # Create/Start Direct Message
@@ -18,6 +21,53 @@ class IM:
 #Lists Latest Direct Message in ALL DM Channels, pprint(rocket.im_list_everyone().json()) Mangler i IMClass
     # def list_latest(self):
     #     pprint(self.rocket.im_list_everyone().json())
+
+    def sendNewMsg(self, recipient, msg) -> bool:
+        sendMsgRespond = self.rocket.chat_post_message(msg, channel=self.rooms[recipient]).json()
+        return sendMsgRespond["success"]
+
+    
+    def checkForFirstMsg(self) -> list:
+        lastMessagesObj = self.rocket.im_list().json()
+
+        if "ims" in lastMessagesObj:
+            lastMsgListe = lastMessagesObj["ims"]
+            if type(lastMsgListe) is list:
+                for xyz in lastMsgListe:
+                    usernames = xyz["usernames"]
+                    for users in usernames:
+                        if users != self.myUsername:
+                            self.newMsg[users] = xyz["lastMessage"]["msg"]
+        
+        for newMessages in self.newMsg:
+            if newMessages not in self.lastMsg:
+                self.lastMsg[newMessages] = self.newMsg[newMessages]
+
+    def checkForNewMsg(self) -> list:
+        lastMessagesObj = self.rocket.im_list().json()
+
+        if "ims" in lastMessagesObj:
+            lastMsgListe = lastMessagesObj["ims"]
+            if type(lastMsgListe) is list:
+                for xyz in lastMsgListe:
+                    usernames = xyz["usernames"]
+                    for users in usernames:
+                        if (users != self.myUsername) and (xyz["lastMessage"]["u"]["username"] != self.myUsername):
+                            self.newMsg[users] = xyz["lastMessage"]["msg"]
+        
+        newMsgFromUsers = []
+
+        for newMessages in self.newMsg:
+            if self.lastMsg[newMessages] != self.newMsg[newMessages]:
+                newMsgFromUsers.append(newMessages)
+                self.lastMsg[newMessages] = self.newMsg[newMessages]
+                
+        
+        print("3 Last msgs: ", self.lastMsg)
+        print("3 New msg: ", self.newMsg)
+        
+        return newMsgFromUsers
+                
 
 #Direct Message History, pprint(rocket.im_history('room_id').json()) Mangler i IMClass
     def printMessages(self, chosenIMChannel):
@@ -60,6 +110,7 @@ class IM:
 
 
 
+
 # Lists Members in Direct Message, pprint(rocket.im_members('room_id').json()) Mangler i IMClass
     def list_members(self):
         pprint(self.rocket.im_members('room_id').json())
@@ -75,7 +126,7 @@ class IM:
                 for xyz in channelliste:
                     usernames = xyz["usernames"]
                     for users in usernames:
-                        if users != self.myusername:
+                        if users != self.myUsername:
                             self.rooms[users] = xyz["_id"]    
 
 # Lists Direct Message Counters, pprint(rocket.im_counters('room_id', 'username').json()) Mangler i IMClass
