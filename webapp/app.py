@@ -14,6 +14,8 @@ from flask import Flask, render_template, request, url_for, session, redirect
 
 from jinja2 import FileSystemLoader, Environment
 
+import threading
+import time
 from requests import sessions
 from rocketchat_API.rocketchat import RocketChat
 from rocketchat_API.APIExceptions.RocketExceptions import RocketAuthenticationException
@@ -46,7 +48,7 @@ def layout():
 
 @app.route("/phd")
 def phd():
-    session["dict_key"] = {"emil": "hej",
+    session["currentChat"] = {"emil": "hej",
             "tobias": "godav"}
     return render_template("phd.html")
 
@@ -56,6 +58,11 @@ def home():
     logged_in()
     if session['is_logged_in']:
         pass
+
+    session['channelNames'] = {"Channel 1": "asfesf243afs",
+    "Channel 2": "asdf45hsfe",
+    "Channel 3": "adv45g4gd43",}
+    
     return render_template("home.html")
 
 # Login Page
@@ -150,12 +157,21 @@ def logged_in():
         session['is_logged_in'] = False
     else:
         session['is_logged_in'] = True
-            
 
+def checker():
+    pass
+
+def checker_thread():
+    while True:
+        if session['is_logged_in']:
+            checker()
+        time.sleep(5)
 
 #########################################################################
 #                               INITIALIZE                              #
 #########################################################################
 
 if __name__ == "__main__":
+    x = threading.Thread(target=checker_thread)
+    x.start()
     app.run(debug=True)
