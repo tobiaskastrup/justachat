@@ -80,9 +80,16 @@ def signup():
     return render_template("signup.html")
 
 
+
 #########################################################################
 #                               FUNCTIONS                               #
 #########################################################################
+
+# def database_query(x, y, z):
+    # cur = db.cursor()
+    # cur.execute("INSERT INTO a(x, y, z) VALUES (%s, %s, %s)", (x, y, z))
+    # db.commit()
+    # cur.close()
 
 # List of available chatrooms (incomplete, need database stuff)
 # def get_data_from_db():
