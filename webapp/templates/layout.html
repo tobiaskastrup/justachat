@@ -16,16 +16,17 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='css/light-theme.css') }}" id="stylesheet_toggle">
     
         <!-- Additional scripts -->
-        <script src="{{ url_for('static', filename='js/darkmode.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/darkmode.js') }}"></script> 
     </head>
 
     <body>
+        <a href="/logged_in"></a>
         <!-- Navigation bar -->
         <nav>
             <!-- Header, contains user control buttons -->
             <header>
                 <div class="container">
-                    {% if not g.user %} <!-- "if not g.user", can remove 'not' to simulate login -->
+                    {% if not g.is_logged_in %} <!-- "if not g.user", can remove 'not' to simulate login -->
                         <a href="/login">Log In / Register</a>
                     {% else %}
                         <div class="wrapper">
