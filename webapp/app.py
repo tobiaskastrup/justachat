@@ -46,7 +46,8 @@ def layout():
 
 @app.route("/phd")
 def phd():
-    # Web page code
+    session["dict_key"] = {"emil": "hej",
+            "tobias": "godav"}
     return render_template("phd.html")
 
 # Home Page

@@ -17,5 +17,13 @@
 
 <!-- Main page content -->
 {% block body %}
-    <p>new page content</p>
+    <div>
+        {% for key, value in session["dict_key"].items() %}
+            {% if session['username'] == key %}
+                <p style="text-align: right;">{{value}}: <b>{{key}}</b></p>
+            {% else %}
+                <p style="text-align: right;"><b>{{key}}</b>: {{value}}</p>
+            {% endif %}
+        {% endfor %}
+    </div>
 {% endblock %}
