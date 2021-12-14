@@ -66,11 +66,14 @@
             <!-- Navigation items, contains chatrooms and private messages -->
             <div class="navitems">
                 <div class="wrapper">
-                    {% if not g.user %} <!-- "if not g.user", can remove 'not' to simulate login -->
+                    {% if g.user %} <!-- "if not g.user", can remove 'not' to simulate login -->
                         <a href="/phd">Placeholder discussion</a>
                     {% else %}
-                        {% for %}
-                        {% endfor %}
+                        <select>
+                            {% for channels in session["channelNames"] %}
+                                <option value="{{ channels }}">{{ channels }}</option>
+                            {% endfor %}
+                        </select>
                     {% endif %}
                 </div>
             </div>
