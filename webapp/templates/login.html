@@ -11,29 +11,37 @@
 {% endblock %}
 
 {% block body %}
+    <!-- Submit form for logging into website -->
     <form action="/login" method="post">
-        
         <div class="container">
-            
-            <label for="uname"><b>Username</b></label>
-            <input type="text" placeholder="Enter Username" name="uname" required> 
+            <!-- Username -->
+            <label for="username"><b>Username</b></label>
+            <input type="text" name="username" id="username" placeholder="Enter Username" required> 
         </div>
-        <div class ="container">
-            <label for="psw"><b>Password</b></label>
-            <input type="password" placeholder="Enter Password" name="psw" required>
-        </div>
+
         <div class="container">
+            <!-- Password -->
+            <label for="password"><b>Password</b></label>
+            <input type="password" name="password" id="password" placeholder="Enter Password" required>
+        </div>
+
+        <div class="container">
+            <!-- Submit button -->
             <button type="submit">Login</button>
+
+            <!-- Remember me -->
             <label>
-              <input type="checkbox" checked="checked" name="remember"> Remember me
+                <input type="checkbox" checked="checked" name="remember"> Remember me
             </label>
         </div>
-        <div class="container" style="background-color:#f1f1f1">
+
+        <div class="container">
             <button type="button" class="cancelbtn">Cancel</button>
             <span class="psw">Forgot <a href="#">password?</a></span>
         </div>
-        <div class="container" style="background-color:#f1f1f1">
-            <span class="psw">Don't have an account yet? <a href="#">Sign up here</a></span>
+
+        <div class="container">
+            <span class="psw">Don't have an account yet? <a href="/signup">Sign up here</a></span>
         </div>
     </form>
 {% endblock %}
