@@ -11,6 +11,10 @@ class DM:
         self.checkForFirstMsg()
 
 
+    def getRooms(self) -> dict:
+        self.updateMyRooms()
+        return self.rooms
+
 # Create/Start Direct Message
     def createDMRoom(self, username):
        createDMResponse = self.rocket.im_create(username).json()

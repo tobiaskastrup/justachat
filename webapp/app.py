@@ -30,27 +30,8 @@ from webapp.py.DirectMessages import DM
 app = Flask(__name__)
 app.secret_key = "asdas3tgdsv4"
 
-# db = mysql.connector.connect(
-    # host = "",
-    # user = "",
-    # password = "",
-    # database = ""
-# )
-
 serverURL = 'http://justa.chat:3000/'
 errormsg = ""
-
-is_logged_in = None
-
-def logged_in():
-    try:
-        rocket
-    except NameError:
-        is_logged_in = False
-        print(is_logged_in)
-    else:
-        is_logged_in = True
-        print(is_logged_in)
 
 #########################################################################
 #                                WEB PAGES                              #
@@ -61,17 +42,20 @@ def logged_in():
 # newpage.html is quick pasteable template for creating a new page
 @app.route("/behindthescenes")
 def layout():
-    return render_template("layout.html", logged=is_logged_in)
+    return render_template("layout.html")
 
 @app.route("/phd")
 def phd():
     # Web page code
-    return render_template("phd.html", logged=is_logged_in)
+    return render_template("phd.html")
 
 # Home Page
 @app.route("/")
 def home():
-    return render_template("home.html", logged=is_logged_in)
+    logged_in()
+    if session['is_logged_in']:
+        pass
+    return render_template("home.html")
 
 # Login Page
 @app.route("/login", methods=["GET", "POST"])
@@ -79,31 +63,38 @@ def login():
     if request.method == "POST":
         login_info = request.form
 
-        username = login_info["username"]
+        session['username'] = login_info["username"]
         password = login_info["password"]
+        logged_in()
 
-        if createSession(username, password):
-            logged_in()
+        if createSession(session['username'], password):
+            global myUser
+            global dmRooms
+            global publicRooms
+            myUser = MyUser(username=session['username'], rocket=rocket)
+            dmRooms = DM(rocket, myUser.getUsername())
+            publicRooms = PublicChannels(rocket)
+
             return redirect(url_for('home'))
         else:
             pass
 
-    return render_template("login.html", logged=is_logged_in)
+    return render_template("login.html")
 
 # Profile Page
 @app.route("/profile")
 def dashboard():
-    return render_template("profile.html", logged=is_logged_in)
+    return render_template("profile.html")
 
 # Settings Page
 @app.route("/settings")
 def settings():
-    return render_template("settings.html", logged=is_logged_in)
+    return render_template("settings.html")
 
 # Signup
 @app.route("/signup")
 def signup():
-    return render_template("signup.html", logged=is_logged_in)
+    return render_template("signup.html")
 
 
 
