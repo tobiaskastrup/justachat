@@ -18,12 +18,14 @@
 <!-- Main page content -->
 {% block body %}
     <div>
-        {% for key, value in session["dict_key"].items() %}
-            {% if session['username'] == key %}
-                <p style="text-align: right;">{{value}}: <b>{{key}}</b></p>
-            {% else %}
-                <p style="text-align: right;"><b>{{key}}</b>: {{value}}</p>
-            {% endif %}
-        {% endfor %}
+        {% if session['is_logged_in'] == True %}
+            {% for key, value in session["currentChat"].items() %}
+                {% if session['username'] == key %}
+                    <p style="text-align: right;">{{value}}: <b>{{key}}</b></p>
+                {% else %}
+                    <p style="text-align: left;"><b>{{key}}</b>: {{value}}</p>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
     </div>
-{% endblock %}
+{% endblock %}  
