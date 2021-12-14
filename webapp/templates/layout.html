@@ -69,12 +69,8 @@
                     {% if not g.user %} <!-- "if not g.user", can remove 'not' to simulate login -->
                         <a href="/phd">Placeholder discussion</a>
                     {% else %}
-                        <!-- Chatrooms go here -->
-                        <!--
-                        for X in Y
-                        <a value="{{ X }}">{{ X }}</a>
-                        endfor
-                        -->
+                        {% for %}
+                        {% endfor %}
                     {% endif %}
                 </div>
             </div>
