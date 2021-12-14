@@ -2,13 +2,14 @@
 #                                LIBRARY                                #
 #########################################################################
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from requests import sessions
 from rocketchat_API.rocketchat import RocketChat
-from webapp.py.MyUser import MyUser
-from webapp.py.Channels import PublicChannels
-from webapp.py.OtherUsers import OtherUsers
-from webapp.py.DirectMessages import DM
+from werkzeug.utils import redirect
+from py.MyUser import MyUser
+from py.Channels import PublicChannels
+from py.OtherUsers import OtherUsers
+from py.DirectMessages import DM
 
 
 
@@ -50,8 +51,17 @@ def home():
     return render_template("home.html")
 
 # Login Page
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login():
+    if request.method == "POST":
+        login_info = request.form
+
+        username = login_info["username"]
+        password = login_info["password"]
+    
+    # if login successful
+        # redirect to home
+
     return render_template("login.html")
 
 # Profile Page
