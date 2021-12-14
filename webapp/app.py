@@ -4,6 +4,8 @@
 
 from flask import Flask, render_template, request, url_for
 
+# We need to use sessions yaaaay
+
 from jinja2 import FileSystemLoader, Environment
 
 from requests import sessions
@@ -32,16 +34,17 @@ app = Flask(__name__)
 serverURL = 'http://justa.chat:3000/'
 errormsg = ""
 
-# is_logged_in = False
-# 
-# @app.route("/logged_in")
-# def logged_in():
-    # try:
-        # rocket
-    # except NameError:
-        # is_logged_in = False
-    # else:
-        # is_logged_in = True
+is_logged_in = None
+
+def logged_in():
+    try:
+        rocket
+    except NameError:
+        is_logged_in = False
+        print(is_logged_in)
+    else:
+        is_logged_in = True
+        print(is_logged_in)
 
 #########################################################################
 #                                WEB PAGES                              #
@@ -52,48 +55,49 @@ errormsg = ""
 # newpage.html is quick pasteable template for creating a new page
 @app.route("/behindthescenes")
 def layout():
-    return render_template("layout.html")
+    return render_template("layout.html", logged=is_logged_in)
 
 @app.route("/phd")
 def phd():
     # Web page code
-    return render_template("phd.html")
+    return render_template("phd.html", logged=is_logged_in)
 
 # Home Page
 @app.route("/")
 def home():
-    return render_template("home.html")
+    return render_template("home.html", logged=is_logged_in)
 
 # Login Page
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    # if request.method == "POST":
-        # login_info = request.form
+    if request.method == "POST":
+        login_info = request.form
 
-        # username = login_info["username"]
-        # password = login_info["password"]
+        username = login_info["username"]
+        password = login_info["password"]
 
-        # if createSession(username, password):
-            # return redirect(url_for('home'))
-        # else:
-            # pass
+        if createSession(username, password):
+            logged_in()
+            return redirect(url_for('home'))
+        else:
+            pass
 
-    return render_template("login.html")
+    return render_template("login.html", logged=is_logged_in)
 
 # Profile Page
 @app.route("/profile")
 def dashboard():
-    return render_template("profile.html")
+    return render_template("profile.html", logged=is_logged_in)
 
 # Settings Page
 @app.route("/settings")
 def settings():
-    return render_template("settings.html")
+    return render_template("settings.html", logged=is_logged_in)
 
 # Signup
 @app.route("/signup")
 def signup():
-    return render_template("signup.html")
+    return render_template("signup.html", logged=is_logged_in)
 
 
 
