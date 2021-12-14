@@ -2,18 +2,23 @@
 #                                LIBRARY                                #
 #########################################################################
 
-from flask import Flask, render_template, request, url_for
+import os, sys
+dir_path = os.path.dirname(os.path.realpath(__file__))
+parent_dir_path = os.path.abspath(os.path.join(dir_path, os.pardir))
+sys.path.insert(0, parent_dir_path)
+
+
+from flask import Flask, render_template, request, url_for, session, redirect
 
 from jinja2 import FileSystemLoader, Environment
 
 from requests import sessions
 from rocketchat_API.rocketchat import RocketChat
 from rocketchat_API.APIExceptions.RocketExceptions import RocketAuthenticationException
-from werkzeug.utils import redirect
-from py.MyUser import MyUser
-from py.Channels import PublicChannels
-from py.OtherUsers import OtherUsers
-from py.DirectMessages import DM
+from webapp.py.MyUser import MyUser
+from webapp.py.Channels import PublicChannels
+from webapp.py.OtherUsers import OtherUsers
+from webapp.py.DirectMessages import DM
 
 
 #########################################################################
@@ -21,6 +26,7 @@ from py.DirectMessages import DM
 #########################################################################
 
 app = Flask(__name__)
+app.secret_key = "asdas3tgdsv4"
 
 # db = mysql.connector.connect(
     # host = "",
@@ -67,16 +73,17 @@ def home():
 # Login Page
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    # if request.method == "POST":
-        # login_info = request.form
+    if request.method == "POST":
+        login_info = request.form
 
-        # username = login_info["username"]
-        # password = login_info["password"]
+        username = login_info["username"]
+        password = login_info["password"]
 
-        # if createSession(username, password):
-            # return redirect(url_for('home'))
-        # else:
-            # pass
+        if createSession(username, password):
+            logged_in()
+            return redirect(url_for('home'))
+        else:
+            pass
 
     return render_template("login.html")
 
@@ -141,6 +148,14 @@ def createAnonSession():
             errormsg = "Something went wrong"
             return False
 
+def logged_in():
+    try:
+        rocket
+    except NameError:
+        session['is_logged_in'] = False
+    else:
+        session['is_logged_in'] = True
+            
 
 
 #########################################################################

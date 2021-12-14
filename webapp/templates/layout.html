@@ -26,7 +26,7 @@
             <!-- Header, contains user control buttons -->
             <header>
                 <div class="container">
-                    {% if not g.is_logged_in %} <!-- "if not g.user", can remove 'not' to simulate login -->
+                    {% if session['is_logged_in'] == False %} <!-- "if not g.user", can remove 'not' to simulate login -->
                         <a href="/login">Log In / Register</a>
                     {% else %}
                         <div class="wrapper">
@@ -128,6 +128,7 @@
             <!-- Container for main page content -->
             <div class="container">
                 <div class="content">
+                    Am I logged in: {{ session['is_logged_in'] }}
                     {% block body %}{% endblock %}
                     <!-- Use include for automating multiple chatrooms -->
                 </div>
