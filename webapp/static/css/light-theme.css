@@ -113,6 +113,9 @@ turned on motion-sickness reduction */
 h1 {
     font-size: var(--fs-big);
     font-weight: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /* Hide body scrollbar, we will put these inside containers later */
