@@ -17,6 +17,7 @@
     
         <!-- Additional scripts -->
         <script src="{{ url_for('static', filename='js/darkmode.js') }}"></script> 
+
     </head>
 
     <body>
@@ -65,18 +66,20 @@
 
             <!-- Navigation items, contains chatrooms and private messages -->
             <div class="navitems">
-                <div class="wrapper">
-                    {% if g.user %} <!-- "if not g.user", can remove 'not' to simulate login -->
+                <div class="wrapper vertical">
+                    {% if session['is_logged_in'] == False %} <!-- "if not g.user", can remove 'not' to simulate login -->
                         <a href="/phd">Placeholder discussion</a>
                     {% else %}
-                        <select>
-                            {% for channels in session["channelNames"] %}
-                                <option value="{{ channels }}">{{ channels }}</option>
+                        <form action="/behindthescenes" method="post">
+                            {% for a in range(session['cRoomNames']|length) %}
+                                <button type="submit" name="channelbutton" id="channelbutton" value="{{session['cRoomNames'][a]}}">{{session['cRoomNames'][a]}}</button>
                             {% endfor %}
-                        </select>
+                        </form>
+                            
                     {% endif %}
                 </div>
             </div>
+
 
             <!-- Footer, contains website logo -->
             <footer>

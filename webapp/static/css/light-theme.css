@@ -204,6 +204,10 @@ nav {
     padding: 1rem;
 }
 
+.vertical {
+    display: block;
+}
+
 
 
 /* -------------------------- Switch Button -------------------------- */

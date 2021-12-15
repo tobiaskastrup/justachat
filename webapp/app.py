@@ -14,6 +14,9 @@ from flask import Flask, render_template, request, url_for, session, redirect
 
 from jinja2 import FileSystemLoader, Environment
 
+loader = FileSystemLoader('/tmp')
+env = Environment(autoescape=True, loader=loader)
+
 import threading
 import time
 from requests import sessions
@@ -23,6 +26,8 @@ from webapp.py.MyUser import MyUser
 from webapp.py.Channels import PublicChannels
 from webapp.py.OtherUsers import OtherUsers
 from webapp.py.DirectMessages import DM
+
+
 
 
 #########################################################################
@@ -35,6 +40,8 @@ app.secret_key = "asdas3tgdsv4"
 serverURL = 'http://justa.chat:3000/'
 errormsg = ""
 
+
+
 #########################################################################
 #                                WEB PAGES                              #
 #########################################################################
@@ -42,8 +49,15 @@ errormsg = ""
 # Placeholder: This is a web page structure reference
 # layout.html is base layout all other pages refer to
 # newpage.html is quick pasteable template for creating a new page
-@app.route("/behindthescenes")
+@app.route("/behindthescenes", methods=["GET", "POST"])
 def layout():
+    if request.method == "POST":
+        roomid_info = request.form
+
+        session['chosenRoom'] = roomid_info["channelbutton"]
+
+        print(session['chosenRoom'])
+
     return render_template("layout.html")
 
 @app.route("/phd")
@@ -56,13 +70,17 @@ def phd():
 @app.route("/")
 def home():
     logged_in()
-    if session['is_logged_in']:
-        pass
 
-    session['channelNames'] = {"Channel 1": "asfesf243afs",
-    "Channel 2": "asdf45hsfe",
-    "Channel 3": "adv45g4gd43",}
     
+    if session['is_logged_in']:
+        session['cRoomNames'], session['cRoomIDs'] = publicRooms.getMyRoomsAsLists()
+        if session.get('chosenRoom') == True:
+            print(session['chosenRoom'])
+
+    # session['channelNames'] = {"Channel_T": "asfesf243afs",
+    # "Channel_V": "asdf45hsfe",
+    # "Channel_B": "adv45g4gd43",}
+
     return render_template("home.html")
 
 # Login Page
@@ -166,6 +184,16 @@ def checker_thread():
         if session['is_logged_in']:
             checker()
         time.sleep(5)
+
+# def updateChosenRoom(roomid):
+#     session['chosenRoom'] = roomid
+#     print(roomid)
+#     #print(session['cRoomNames'])
+#     #print(session['cRoomIDs'])
+
+# app.jinja_env.globals.update(updateChosenRoom=updateChosenRoom)
+
+
 
 #########################################################################
 #                               INITIALIZE                              #

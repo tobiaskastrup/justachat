@@ -19,29 +19,20 @@ class PublicChannels:
                 for xyz in channelliste:
                     self.rooms[xyz["name"]] = xyz["_id"]
 
-    def allRooms(self):
-        '''Printer alle channels (admin)'''
-        print("Choose a room to connect:")
-        tempRooms = {}
+    def getMyRoomsAsLists(self) -> tuple:
+
+        self.updateMyRooms()
+
+        tempRoomsNames = []
+        tempRoomsIDs = []
         n=1
-        for rooms in self.rooms:
-            tempRooms[n] = rooms
-            print(f'{n}: {tempRooms[n]}')
+        for name, id in self.myRooms.items():
+            tempRoomsNames.append(name)
+            tempRoomsIDs.append(id)
             n = n+1
+
+        return tempRoomsNames, tempRoomsIDs
         
-        # Vælg et rum
-        while True:
-            try:
-                i = int(input(f"Vælg et nummer mellem 1 og {len(self.rooms)}: "))
-                break
-            except ValueError:
-                print('\nYou did not enter a valid integer')
-            if i < len(self.rooms):
-                print("\nFail")
-            elif i < 1:
-                print("\nFail")
-        
-        return tempRooms[i]
 
     def getRoomID(self, roomName) -> str:
         '''Returnerer Channel ID'''
