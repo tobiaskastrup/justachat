@@ -64,13 +64,12 @@ def layout():
 
 @app.route("/phd")
 def phd():
+    
     if session['is_logged_in']:
-        if session.get('chosenRoom') == True:
-            session["currentChatNames"], session["currentChatMsg"] = publicRooms.getMessages(session['chosenRoom'], 20)
-            
-    # else:
-    #     session["currentChatNames"] = ["tobias", "mathilde", "tobias", "mathilde"]
-    #     session["currentChatMsg"]= ["hej", "daw", "goddah", "math2"]
+        session["currentChatNames"], session["currentChatMsg"] = publicRooms.getMessages(session['chosenRoom'], 20)     
+    else:
+        session["currentChatNames"] = []
+        session["currentChatMsg"]= []
 
     return render_template("phd.html")
 
