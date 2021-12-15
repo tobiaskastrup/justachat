@@ -58,12 +58,20 @@ def layout():
 
         print(session['chosenRoom'])
 
+        return redirect(url_for('phd'))
+
     return render_template("layout.html")
 
 @app.route("/phd")
 def phd():
-    session["currentChat"] = {"emil": "hej",
-            "tobias": "godav"}
+    if session['is_logged_in']:
+        if session.get('chosenRoom') == True:
+            session["currentChatNames"], session["currentChatMsg"] = publicRooms.getMessages(session['chosenRoom'], 20)
+            
+    # else:
+    #     session["currentChatNames"] = ["tobias", "mathilde", "tobias", "mathilde"]
+    #     session["currentChatMsg"]= ["hej", "daw", "goddah", "math2"]
+
     return render_template("phd.html")
 
 # Home Page
@@ -74,12 +82,9 @@ def home():
     
     if session['is_logged_in']:
         session['cRoomNames'], session['cRoomIDs'] = publicRooms.getMyRoomsAsLists()
-        if session.get('chosenRoom') == True:
-            print(session['chosenRoom'])
+        # if session.get('chosenRoom') == True:
+        #     print(session['chosenRoom'])
 
-    # session['channelNames'] = {"Channel_T": "asfesf243afs",
-    # "Channel_V": "asdf45hsfe",
-    # "Channel_B": "adv45g4gd43",}
 
     return render_template("home.html")
 
@@ -103,7 +108,7 @@ def login():
 
             return redirect(url_for('home'))
         else:
-            pass
+            pass # Besked om login ikke virker
 
     return render_template("login.html")
 
@@ -127,20 +132,6 @@ def signup():
 #########################################################################
 #                               FUNCTIONS                               #
 #########################################################################
-
-# def database_query(x, y, z):
-    # cur = db.cursor()
-    # cur.execute("INSERT INTO a(x, y, z) VALUES (%s, %s, %s)", (x, y, z))
-    # db.commit()
-    # cur.close()
-
-# List of available chatrooms (incomplete, need database stuff)
-# def get_data_from_db():
-    # cur = db.cursor()
-    # cur.execute("SELECT room FROM chatrooms")
-    # chatroom_list = cur.fetchall()
-    # chatroom_list = [i[0] for i in chatroom_list]
-    # return chatroom_list
 
 def createSession(_nickname, _password) -> bool:
     with sessions.Session() as session:
@@ -177,7 +168,7 @@ def logged_in():
         session['is_logged_in'] = True
 
 def checker():
-    pass
+    logged_in()
 
 def checker_thread():
     while True:
@@ -192,8 +183,6 @@ def checker_thread():
 #     #print(session['cRoomIDs'])
 
 # app.jinja_env.globals.update(updateChosenRoom=updateChosenRoom)
-
-
 
 #########################################################################
 #                               INITIALIZE                              #
