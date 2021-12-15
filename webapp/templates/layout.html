@@ -26,7 +26,7 @@
             <!-- Header, contains user control buttons -->
             <header>
                 <div class="container">
-                    {% if session['is_logged_in'] == False %} <!-- "if not g.user", can remove 'not' to simulate login -->
+                    {% if session['is_logged_in'] == False %}
                         <a href="/login">Log In / Register</a>
                     {% else %}
                         <div class="wrapper">
@@ -66,7 +66,7 @@
             <!-- Navigation items, contains chatrooms and private messages -->
             <div class="navitems">
                 <div class="wrapper">
-                    {% if g.user %} <!-- "if not g.user", can remove 'not' to simulate login -->
+                    {% if session['is_logged_in'] == False %}
                         <a href="/phd">Placeholder discussion</a>
                     {% else %}
                         <select>
