@@ -137,6 +137,10 @@ footer {
     bottom: 0;
 }
 
+button {
+    border: none;
+}
+
 /* z-index above main, below headers, fix position */
 nav {
     height: 100vh;
@@ -165,7 +169,7 @@ nav {
 }
 
 /* Adds horizontal margin between elements inside wrapper */
-.wrapper > * {
+.wrapper.spacing > * {
     margin: 0 0.1rem;
 }
 
@@ -185,28 +189,40 @@ nav {
     transform: scale(1.1);
 }
 
-/* Fix position of wrapper within navtitems */
-.navitems > .wrapper {
-    left: -0.13rem;
-    position: relative;
-    width: 19rem;
-}
-
 /* Styls <a href=""></a> within navitems */
-.navitems a {
+/* Currently only used for phd when not logged in */
+/*.navitems a {
     padding: 1rem;
     text-decoration: none;
     width: 18rem;
-}
+}*/
 
 /* Adds extra padding */
 .extrapadding {
     padding: 1rem;
 }
 
-.vertical {
-    display: block;
+.discussionlist {
+    width: 100%;
 }
+
+.discussionlist button {
+    background: none;
+    color: var(--clr-white);
+    display: block;
+    padding: 0.5rem;
+    width: 100%;
+}
+
+.discussionlist button:hover {
+    cursor: pointer;
+    color: var(--clr-black);
+    background: var(--clr-lime);
+}
+
+/*.vertical {
+    display: block;
+}*/
 
 
 

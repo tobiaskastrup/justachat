@@ -43,7 +43,7 @@
                             </div>
                         </div>
 
-                        <div class="wrapper">
+                        <div class="wrapper spacing">
                             <a href="">
                                 <img src="../static/images/users.png" class="thumbnail">
                             </a> <!-- Dropdown friendlist with option to add friend? -->
@@ -66,17 +66,15 @@
 
             <!-- Navigation items, contains chatrooms and private messages -->
             <div class="navitems">
-                <div class="wrapper vertical">
+                <div class="wrapper">
                     {% if session['is_logged_in'] == False %} <!-- "if not g.user", can remove 'not' to simulate login -->
                         <a href="/phd">Placeholder discussion</a>
                     {% else %}
-                        <form action="/behindthescenes" method="post">
-                            <p><b>Public Channels</b></p>
+                        <form action="/behindthescenes" method="post" class="discussionlist vertical">
                             {% for a in range(session['cRoomNames']|length) %}
                                 <button type="submit" name="channelbutton" id="channelbutton" value="{{session['cRoomIDs'][a]}}">{{session['cRoomNames'][a]}}</button>
                             {% endfor %}
-                        </form>
-                            
+                        </form>   
                     {% endif %}
                 </div>
             </div>
@@ -96,13 +94,13 @@
             <header>
                 <div class="container">
                     <!-- Header title and icon -->
-                    <div class="wrapper">
+                    <div class="wrapper spacing">
                         <img src="{% block headerthumbnail %}{% endblock %}" class="icon">
                         <h1>{% block header %}{% endblock %}</h1>
                     </div>
 
                     <!-- Chatroom buttons -->
-                    <div class="wrapper">
+                    <div class="wrapper spacing">
                         <a href=""> <!-- Room Information -->
                             <img src="../static/images/info.png" class="thumbnail">
                         </a>
