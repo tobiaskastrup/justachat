@@ -65,15 +65,14 @@
 
             <!-- Navigation items, contains chatrooms and private messages -->
             <div class="navitems">
-                <div class="wrapper">
+                <div class="wrapper vertical">
                     {% if session['is_logged_in'] == False %}
                         <a href="/phd">Placeholder discussion</a>
                     {% else %}
-                        <select>
-                            {% for channels in session["channelNames"] %}
-                                <option value="{{ channels }}">{{ channels }}</option>
-                            {% endfor %}
-                        </select>
+                        {% for channels in session["channelNames"] %}
+                            <div id="{{ channels }}" onClick="sessionStorage.id={{ channels }}">{{ channels }}</div>
+                        {% endfor %}
+                        <button onclick="alert(sessionStorage.getItem('id'))">Check Session Value</button>
                     {% endif %}
                 </div>
             </div>

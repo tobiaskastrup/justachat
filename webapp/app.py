@@ -59,9 +59,9 @@ def home():
     if session['is_logged_in']:
         pass
 
-    session['channelNames'] = {"Channel 1": "asfesf243afs",
-    "Channel 2": "asdf45hsfe",
-    "Channel 3": "adv45g4gd43",}
+    session['channelNames'] = {"Channel_1": "asfesf243afs",
+    "Channel_2": "asdf45hsfe",
+    "Channel_3": "adv45g4gd43",}
     
     return render_template("home.html")
 
