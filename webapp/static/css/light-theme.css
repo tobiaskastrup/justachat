@@ -137,10 +137,6 @@ footer {
     bottom: 0;
 }
 
-button {
-    border: none;
-}
-
 /* z-index above main, below headers, fix position */
 nav {
     height: 100vh;
@@ -208,6 +204,7 @@ nav {
 
 .discussionlist button {
     background: none;
+    border: none;
     color: var(--clr-white);
     display: block;
     padding: 0.5rem;
@@ -219,10 +216,6 @@ nav {
     color: var(--clr-black);
     background: var(--clr-lime);
 }
-
-/*.vertical {
-    display: block;
-}*/
 
 
 
