@@ -106,3 +106,20 @@ class PublicChannels:
                 for xyz in reversed(msgliste):
                     print(f'{xyz["u"]["username"]}:     {xyz["msg"]}')
 
+    def getMessages(self, channelID, msgCount) -> tuple:
+        msg = self.rocket.channels_history(channelID, count=msgCount).json()
+
+        cleanedName = []
+        cleanedMsg = []
+        
+        # Itterer igennem beskeder fra rummet
+        if "messages" in msg:
+            msgliste = msg["messages"]
+            if type(msgliste) is list:
+                for xyz in reversed(msgliste):
+                    cleanedName.append(xyz["u"]["username"])
+                    cleanedMsg.append(xyz["msg"])
+                    
+        return cleanedName, cleanedMsg
+
+

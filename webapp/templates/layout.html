@@ -71,8 +71,9 @@
                         <a href="/phd">Placeholder discussion</a>
                     {% else %}
                         <form action="/behindthescenes" method="post">
+                            <p><b>Public Channels</b></p>
                             {% for a in range(session['cRoomNames']|length) %}
-                                <button type="submit" name="channelbutton" id="channelbutton" value="{{session['cRoomNames'][a]}}">{{session['cRoomNames'][a]}}</button>
+                                <button type="submit" name="channelbutton" id="channelbutton" value="{{session['cRoomIDs'][a]}}">{{session['cRoomNames'][a]}}</button>
                             {% endfor %}
                         </form>
                             
