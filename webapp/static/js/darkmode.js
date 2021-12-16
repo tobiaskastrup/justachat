@@ -7,7 +7,6 @@ window.onload = function() {
         theme.href = selected;
     }
 
-    /* Might need to remove ".." in "../static/css/xyz.css" for it to work */
     toggle.addEventListener("click", function() {
         if (theme.getAttribute("href") == "../static/css/light-theme.css") {
             theme.href = "../static/css/dark-theme.css";

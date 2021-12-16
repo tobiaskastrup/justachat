@@ -16,7 +16,8 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='css/light-theme.css') }}" id="stylesheet_toggle">
     
         <!-- Additional scripts -->
-        <script src="{{ url_for('static', filename='js/darkmode.js') }}"></script> 
+        <script src="{{ url_for('static', filename='js/darkmode.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/scrolltobottom.js') }}"></script>
     </head>
 
     <body>
@@ -83,11 +84,18 @@
                     {% if session['is_logged_in'] == False %}
                     {% else %}
                         <form action="/behindthescenes" method="post" class="discussionlist vertical">
-                            {{"Channels"}}
+                            <div class="channeltypedescriptor">
+                                {{"Channels"}}
+                            </div>
+
                             {% for a in range(session['cRoomNames']|length) %}
                                 <button type="submit" name="channelbutton" id="channelbutton" value="{{ session['cRoomNames'][a] }}">{{ session['cRoomNames'][a] }}</button>
                             {% endfor %}
-                            {{"Friends"}}
+
+                            <div class="channeltypedescriptor">
+                                {{"Friends"}}
+                            </div>
+                            
                             {% for a in range(session['dRoomNames']|length) %}
                                 <button type="submit" name="channelbutton" id="channelbutton" value="{{ session['dRoomNames'][a] }}">{{ session['dRoomNames'][a] }}</button>
                             {% endfor %}

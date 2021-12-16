@@ -18,6 +18,7 @@
 
     /* Font size */
     --fs-big: 1.75rem;
+    --fs-medium: 1.35rem;
     --fs-small: 1rem;
 }
 
@@ -214,6 +215,14 @@ nav {
     cursor: pointer;
 }
 
+.channeltypedescriptor { /* HERE */
+    font-size: var(--fs-medium);
+    padding: 0.5rem;
+    text-align: center;
+    
+    color: var(--clr-lime);
+}
+
 /* Login button, located in navigation bar header */
 .loginbtn {
     margin: auto;
@@ -247,6 +256,10 @@ nav {
 
 .loginform {
     max-width: 25rem;
+}
+
+.signupform {
+    max-width: 40rem;
 }
 
 .tooltip {
