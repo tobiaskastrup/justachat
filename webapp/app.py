@@ -23,6 +23,7 @@ from webapp.py.MyUser import MyUser
 from webapp.py.Channels import PublicChannels
 from webapp.py.OtherUsers import OtherUsers
 from webapp.py.DirectMessages import DM
+from pprint import pprint
 
 
 
@@ -34,7 +35,6 @@ app = Flask(__name__)
 app.secret_key = "asdas3tgdsv4"
 
 serverURL = 'http://justa.chat:3000/'
-errormsg = ""
 
 
 
@@ -59,7 +59,7 @@ def layout():
 @app.route("/phd")
 def phd():
     if session['is_logged_in']:
-        session["currentChatNames"], session["currentChatMsg"] = publicRooms.getMessages(session['chosenRoom'], 20)
+        session["currentChatNames"], session["currentChatMsg"] = publicRooms.getMessages(session['chosenRoom'], 100)
         print(session['chosenRoom']) 
         print(session["currentChatMsg"])
     else:
@@ -90,12 +90,7 @@ def login():
         logged_in()
 
         if createSession(session['username'], password):
-            global myUser
-            global dmRooms
-            global publicRooms
-            myUser = MyUser(username=session['username'], rocket=rocket)
-            dmRooms = DM(rocket, myUser.getUsername())
-            publicRooms = PublicChannels(rocket)
+            makeChatObjects()
 
             return redirect(url_for('home'))
         else:
@@ -125,8 +120,36 @@ def settings():
     return render_template("settings.html")
 
 # Signup
-@app.route("/signup")
+@app.route("/signup", methods=["GET", "POST"])
 def signup():
+
+    if session['is_logged_in'] is False:
+        if request.method == "POST":
+
+            if request.form.get("submit_b"):
+                userreg_info = request.form
+
+                reg_displayname = userreg_info["displayname"]
+                reg_username = userreg_info["username"]
+                reg_password = userreg_info["password"]
+                reg_email = "".join([reg_username, "@justa.chat"])
+
+                if createAnonSession():
+                    signuprespons = anonrocket.users_register(reg_email, reg_displayname, reg_password, reg_username).json()
+                    print("signup: ", signuprespons["success"])
+                    if signuprespons["success"]:
+                        
+                        return redirect(url_for('login'))
+                
+                    else:
+                        pass
+
+            elif request.form.get("cancel"):
+                return redirect(url_for("home")) 
+            
+    else:
+        return redirect(url_for("home"))
+
     return render_template("signup.html")
 
 
@@ -161,6 +184,14 @@ def createAnonSession():
             print("Something went wrong")
             return False
 
+def makeChatObjects():
+    global myUser
+    global dmRooms
+    global publicRooms
+    myUser = MyUser(username=session["username"], rocket=rocket)
+    dmRooms = DM(rocket, myUser.getUsername())
+    publicRooms = PublicChannels(rocket)
+
 def logged_in():
     try:
         rocket
@@ -168,15 +199,7 @@ def logged_in():
         session['is_logged_in'] = False
     else:
         session['is_logged_in'] = True
-
-def checker():
-    logged_in()
-
-def checker_thread():
-    while True:
-        if session['is_logged_in']:
-            checker()
-        time.sleep(5)
+    print("Logged in: ", session['is_logged_in'])
 
 # def updateChosenRoom(roomid):
 #     session['chosenRoom'] = roomid
@@ -191,6 +214,4 @@ def checker_thread():
 #########################################################################
 
 if __name__ == "__main__":
-    x = threading.Thread(target=checker_thread)
-    x.start()
     app.run(debug=True)
