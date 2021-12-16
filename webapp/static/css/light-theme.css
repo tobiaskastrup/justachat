@@ -226,11 +226,21 @@ nav {
     overflow-y: scroll;
 }
 
+.messagehistory p {
+    margin: 0.25rem 0;
+}
+
 .wide {
     width: 100%;
 }
 
+.you {
+    text-align: right;
+}
 
+.them {
+    text-align: left;
+}
 
 /* -------------------------- Switch Button -------------------------- */
 
