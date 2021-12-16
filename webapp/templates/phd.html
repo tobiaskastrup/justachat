@@ -17,17 +17,27 @@
 
 <!-- Main page content -->
 {% block body %}
-    <div class="messagehistory">
+    <fieldset class="messagehistory">
         {% if session['is_logged_in'] == True %}
             {% for a in range(session["currentChatMsg"] | length) %}
                 {% if session['username'] == session["currentChatNames"][a] %}
-                    <p style="text-align: right;">{{ session["currentChatMsg"][a] }}: <b>{{ session["currentChatNames"][a] }}</b></p>
+                    <p class="you">{{ session["currentChatMsg"][a] }}: <b>{{ session["currentChatNames"][a] }}</b></p>
                 {% else %}
-                    <p style="text-align: left;"><b>{{ session["currentChatNames"][a] }}</b>: {{ session["currentChatMsg"][a] }}</p>
+                    <p class="them"><b>{{ session["currentChatNames"][a] }}</b>: {{ session["currentChatMsg"][a] }}</p>
                 {% endif %}
             {% endfor %}
         {% endif %}
+    </fieldset>
+{% endblock %}
+
+<!-- Main page footer -->
+{% block bodyfooter %}
+    <div class="messagebox wide">
+        <form action="">
+            <div class="container spacing">
+                <input type="text" class="wide">
+                <button type="submit">Send</button>
+            </div>
+        </form>
     </div>
-    <footer class="messagebox">
-    </footer>
 {% endblock %}

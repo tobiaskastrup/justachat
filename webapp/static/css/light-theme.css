@@ -133,8 +133,9 @@ header {
 
 /* Force bottom of page */
 footer {
-    position: absolute;
     bottom: 0;
+    position: absolute;
+    width: 100%;
 }
 
 /* z-index above main, below headers, fix position */
@@ -147,6 +148,7 @@ nav {
 
 /* position next to nav instead of under */
 .main {
+    height: 100vh;
     margin-left: 18rem;
     position: relative;
 }
@@ -165,13 +167,15 @@ nav {
 }
 
 /* Adds horizontal margin between elements inside wrapper */
+.container.spacing > *,
 .wrapper.spacing > * {
     margin: 0 0.1rem;
 }
 
 /* Main page content */
 .content {
-    padding: 0.25rem 0.75rem;
+    width: 100%;
+    padding: 0.5rem;
 }
 
 /* Fixed height for icons and thumbnails */
@@ -213,6 +217,33 @@ nav {
     margin: auto;
     padding: 0.5rem;
     text-decoration: none;
+}
+
+.messagehistory {
+    border-radius: 0.25rem;
+    border-style: solid;
+    margin: -0.25rem;
+    overflow-y: scroll;
+}
+
+.messagehistory p {
+    margin: 0.25rem 0;
+}
+
+.wide {
+    width: 100%;
+}
+
+.you {
+    text-align: right;
+}
+
+.them {
+    text-align: left;
+}
+
+.loginform {
+    max-width: 40%;
 }
 
 
@@ -297,11 +328,21 @@ input:checked + .slider:before {
     margin-left: -0.6rem;
 }
 
-/* Styles attributes (<a></a>) inside dropdown content */
-.dropdown-content > a {
+/* Styles a and button element inside dropdown-content */
+.dropdown-content a,
+.dropdown-content button {
+    border: none;
     display: block;
     padding: 0.5rem 0.5rem;
+    text-align: left;
     text-decoration: none;
+    width: 100%;
+}
+
+/* Styles a and button element inside dropdown-content on hover */
+.dropdown-content a:hover,
+.dropdown-content button {
+    cursor: pointer;
 }
 
 /* Unhides dropdown content when hovering dropdown element */
@@ -326,7 +367,6 @@ body {
 nav {
     background: var(--clr-gray);
     color: var(--clr-white);
-    box-shadow: 0 0 2px var(--clr-black);
 }
 
 .navitems a {
@@ -337,8 +377,8 @@ nav {
     background: var(--clr-lime);
 }
 
-header {
-    box-shadow: 0 0 2px var(--clr-black);
+header, nav {
+    box-shadow: 0 0 0.1rem var(--clr-black);
 }
 
 .slider {
@@ -353,12 +393,14 @@ input:checked + .slider {
     background: var(--clr-lime);
 }
 
-.dropdown-content > a {
+.dropdown-content a,
+.dropdown-content button {
     color: var(--clr-black);
     background: var(--clr-almostwhite);
 }
 
-.dropdown-content > a:hover {
+.dropdown-content a:hover,
+.dropdown-content button:hover {
     background: var(--clr-lime);
 }
 
@@ -378,4 +420,13 @@ input:checked + .slider {
 
 .loginbtn:hover {
     background: var(--clr-lime);
+}
+
+.messagehistory {
+    background: var(--clr-white);
+    border-color: var(--clr-lightgray);
+}
+
+.boxshadow {
+    box-shadow: 0 0 0.1rem var(--clr-black);
 }
