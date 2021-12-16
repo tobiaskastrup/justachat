@@ -13,30 +13,35 @@
 {% endblock %}
 
 {% block body %}
-<form action="/signup" method="POST">
-        
+<form action="/signup" method="POST" class="signupform">
     <div class="container">
         <label for="displayname"><b>Desired display name</b></label>
         <input type="text" placeholder="Enter desired display name" name="displayname" id="displayname" required> 
     </div>
+
     <div class="container">
         <label for="username"><b>Desired username</b></label>
         <input type="text" placeholder="Enter desired username" name="username" id="username" required> 
     </div>
-    <div>
+
+    <div class="container">
          Your password must have at least have: 6 characters, one small letter, one big letter, a number, and special sign
     </div>
+
     <div class ="container">
         <label for="password"><b>Type your desired password </b></label>
         <input type="password" placeholder="Enter your desired Password" name="password" id="password" minlength="6" required>
     </div>
+
     <div class ="container">
         <label for="password"><b>Repeat the desired password</b></label>
         <input type="password" placeholder="Repeat your desired assword" name="password" id="password" minlength="6" required>
     </div>
+
     <div class="container">
         <button type="submit" name="submit_b" value="submit_b">Signup</button>
     </div>
+    
     <div class="container">
         <button type="submit" name="cancel" value="cancel">Cancel</button>
     </div>
