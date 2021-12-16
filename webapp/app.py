@@ -56,6 +56,7 @@ def layout():
 
     return render_template("layout.html")
 
+# Chatroom page
 @app.route("/phd")
 def phd():
     if session['is_logged_in']:

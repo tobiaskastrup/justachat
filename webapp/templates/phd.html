@@ -17,7 +17,7 @@
 
 <!-- Main page content -->
 {% block body %}
-    <div class="messagehistory">
+    <fieldset class="messagehistory">
         {% if session['is_logged_in'] == True %}
             {% for a in range(session["currentChatMsg"] | length) %}
                 {% if session['username'] == session["currentChatNames"][a] %}
@@ -27,7 +27,17 @@
                 {% endif %}
             {% endfor %}
         {% endif %}
+    </fieldset>
+{% endblock %}
+
+<!-- Main page footer -->
+{% block bodyfooter %}
+    <div class="messagebox wide">
+        <form>
+            <div class="container spacing">
+                <input type="text" class="wide">
+                <button type="submit">Send</button>
+            </div>
+        </form>
     </div>
-    <footer class="messagebox">
-    </footer>
 {% endblock %}
