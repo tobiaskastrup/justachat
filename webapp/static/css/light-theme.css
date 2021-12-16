@@ -185,27 +185,20 @@ nav {
     transform: scale(1.1);
 }
 
-/* Styls <a href=""></a> within navitems */
-/* Currently only used for phd when not logged in */
-/*.navitems a {
-    padding: 1rem;
-    text-decoration: none;
-    width: 18rem;
-}*/
-
 /* Adds extra padding */
 .extrapadding {
     padding: 1rem;
 }
 
+/* Section of the navigation bar where discussions are listed */
 .discussionlist {
     width: 100%;
 }
 
+/* Button for accessing discussions, located in navigation bar */
 .discussionlist button {
     background: none;
     border: none;
-    color: var(--clr-white);
     display: block;
     padding: 0.5rem;
     width: 100%;
@@ -213,8 +206,13 @@ nav {
 
 .discussionlist button:hover {
     cursor: pointer;
-    color: var(--clr-black);
-    background: var(--clr-lime);
+}
+
+/* Login button, located in navigation bar header */
+.loginbtn {
+    margin: auto;
+    padding: 0.5rem;
+    text-decoration: none;
 }
 
 
@@ -361,5 +359,23 @@ input:checked + .slider {
 }
 
 .dropdown-content > a:hover {
+    background: var(--clr-lime);
+}
+
+.discussionlist button {
+    color: var(--clr-white);
+}
+
+.discussionlist button:hover {
+    color: var(--clr-black);
+    background: var(--clr-lime);
+}
+
+.loginbtn {
+    background: var(--clr-white);
+    color: var(--clr-black);
+}
+
+.loginbtn:hover {
     background: var(--clr-lime);
 }
