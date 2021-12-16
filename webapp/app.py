@@ -56,8 +56,6 @@ def layout():
 
         session['chosenRoom'] = roomid_info["channelbutton"]
 
-        print(session['chosenRoom'])
-
         return redirect(url_for('phd'))
 
     return render_template("layout.html")
@@ -66,10 +64,11 @@ def layout():
 def phd():
     
     if session['is_logged_in']:
-        session["currentChatNames"], session["currentChatMsg"] = publicRooms.getMessages(session['chosenRoom'], 20)     
+        session["currentChatNames"], session["currentChatMsg"] = publicRooms.getMessages(session['chosenRoom'], 20)
+        print(session['chosenRoom']) 
+        print(session["currentChatMsg"])
     else:
-        session["currentChatNames"] = []
-        session["currentChatMsg"]= []
+        return redirect(url_for("login"))
 
     return render_template("phd.html")
 
@@ -114,11 +113,23 @@ def login():
 # Profile Page
 @app.route("/profile")
 def dashboard():
+
+    if session['is_logged_in']:
+        pass
+    else:
+        return redirect(url_for('home.html'))
+
     return render_template("profile.html")
 
 # Settings Page
 @app.route("/settings")
 def settings():
+
+    if session['is_logged_in']:
+        pass
+    else:
+        return redirect(url_for("login"))
+
     return render_template("settings.html")
 
 # Signup
@@ -139,10 +150,10 @@ def createSession(_nickname, _password) -> bool:
             rocket = RocketChat(_nickname, _password, server_url=serverURL, session=session)
             return True
         except RocketAuthenticationException as e:
-            errormsg = "Login or connection failed"
+            print("Login or connection failed")
             return False
         except Exception as ve:
-            errormsg = "Something went wrong"
+            print("Something went wrong")
             return False
 
 def createAnonSession():
@@ -152,10 +163,10 @@ def createAnonSession():
             anonrocket = RocketChat(server_url=serverURL, session=session)
             return True
         except RocketAuthenticationException as e:
-            errormsg = "Connection failed"
+            print("Connection failed")
             return False
         except Exception as ve:
-            errormsg = "Something went wrong"
+            print("Something went wrong")
             return False
 
 def logged_in():
