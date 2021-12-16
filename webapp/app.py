@@ -7,10 +7,7 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 parent_dir_path = os.path.abspath(os.path.join(dir_path, os.pardir))
 sys.path.insert(0, parent_dir_path)
 
-
 from flask import Flask, render_template, request, url_for, session, redirect
-
-# We need to use sessions yaaaay
 
 from jinja2 import FileSystemLoader, Environment
 
@@ -26,7 +23,6 @@ from webapp.py.MyUser import MyUser
 from webapp.py.Channels import PublicChannels
 from webapp.py.OtherUsers import OtherUsers
 from webapp.py.DirectMessages import DM
-
 
 
 
@@ -64,7 +60,6 @@ def layout():
 
 @app.route("/phd")
 def phd():
-    
     if session['is_logged_in']:
         session["currentChatNames"], session["currentChatMsg"] = publicRooms.getMessages(session['chosenRoom'], 20)     
     else:
@@ -78,12 +73,10 @@ def phd():
 def home():
     logged_in()
 
-    
     if session['is_logged_in']:
         session['cRoomNames'], session['cRoomIDs'] = publicRooms.getMyRoomsAsLists()
         # if session.get('chosenRoom') == True:
         #     print(session['chosenRoom'])
-
 
     return render_template("home.html")
 
@@ -114,6 +107,11 @@ def login():
 # Profile Page
 @app.route("/profile")
 def dashboard():
+    if session['is_logged_in']:
+        pass
+    else:
+        return redirect(url_for('home'))
+
     return render_template("profile.html")
 
 # Settings Page
