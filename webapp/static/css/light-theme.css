@@ -134,6 +134,7 @@ header {
 /* Force bottom of page */
 footer {
     bottom: 0;
+    min-height: 3rem;
     position: absolute;
     width: 100%;
 }
@@ -169,7 +170,7 @@ nav {
 /* Adds horizontal margin between elements inside wrapper */
 .container.spacing > *,
 .wrapper.spacing > * {
-    margin: 0 0.1rem;
+    margin: 0 0.25rem;
 }
 
 /* Main page content */
@@ -244,6 +245,37 @@ nav {
 
 .loginform {
     max-width: 40%;
+}
+
+.tooltip {
+    position: relative;
+}
+
+.tooltip > .tooltiptextright {
+    border-radius: 0.5rem;
+    left: 110%;
+    padding: 0.3rem 1rem;
+    position: absolute;
+    text-align: center;
+    visibility: hidden;
+    white-space: nowrap;
+    z-index: 10;
+}
+
+.tooltip > .tooltiptextleft {
+    border-radius: 0.5rem;
+    right: 110%;
+    padding: 0.3rem 1rem;
+    position: absolute;
+    text-align: center;
+    visibility: hidden;
+    white-space: nowrap;
+    z-index: 10;
+}
+
+.tooltip:hover > .tooltiptextleft,
+.tooltip:hover > .tooltiptextright {
+    visibility: visible;
 }
 
 
@@ -405,7 +437,7 @@ input:checked + .slider {
 }
 
 .discussionlist button {
-    color: var(--clr-white);
+    color: var(--clr-black);
 }
 
 .discussionlist button:hover {
@@ -429,4 +461,10 @@ input:checked + .slider {
 
 .boxshadow {
     box-shadow: 0 0 0.1rem var(--clr-black);
+}
+
+.tooltip > .tooltiptextleft,
+.tooltip > .tooltiptextright {
+    background: var(--clr-white);
+    color: var(--clr-black);
 }
