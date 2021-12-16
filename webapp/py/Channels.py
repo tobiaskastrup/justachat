@@ -33,6 +33,9 @@ class PublicChannels:
 
         return tempRoomsNames, tempRoomsIDs
         
+    def getMyRooms(self) -> dict:
+        self.updateMyRooms()
+        return self.myRooms
 
     def getRoomID(self, roomName) -> str:
         '''Returnerer Channel ID'''
@@ -119,7 +122,7 @@ class PublicChannels:
                 for xyz in reversed(msgliste):
                     cleanedName.append(xyz["u"]["username"])
                     cleanedMsg.append(xyz["msg"])
-                    print(xyz["u"]["username"], ": ", xyz["msg"])
+
                     
         return cleanedName, cleanedMsg
 

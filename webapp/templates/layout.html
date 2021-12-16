@@ -84,7 +84,7 @@
                     {% else %}
                         <form action="/behindthescenes" method="post" class="discussionlist vertical">
                             {% for a in range(session['cRoomNames']|length) %}
-                                <button type="submit" name="channelbutton" id="channelbutton" value="{{ session['cRoomIDs'][a] }}">{{ session['cRoomNames'][a] }}</button>
+                                <button type="submit" name="channelbutton" id="channelbutton" value="{{ session['cRoomNames'][a] }}">{{ session['cRoomNames'][a] }}</button>
                             {% endfor %}
                         </form>   
                     {% endif %}
