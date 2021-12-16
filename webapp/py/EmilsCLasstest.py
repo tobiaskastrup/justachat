@@ -59,8 +59,9 @@ myUser = MyUser(username=nickname, rocket=rocket)
 
 
 ### USER TESTS ###
-# pprint(tobias.getID())
+pprint(rocket.me().json())
 # myUser = MyUser(username=nickname, rocket=rocket)
+# print(myUser.getDisplayName())
 
 
 ### IM TESTS ###

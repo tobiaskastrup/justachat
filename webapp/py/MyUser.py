@@ -7,6 +7,9 @@ class MyUser:
         self.rocket = rocket
         self.status = None
         self.statusText = None
+        self.displayName = None
+        self.email = None
+
         if username is not None:
             self.updateUser()
         #else:
@@ -17,18 +20,30 @@ class MyUser:
         # Laver et objekt der kan bruges til at opdatere brugers info.
         userObj = self.rocket.me().json()
         # Hvis bruger info ikke eksisterer lægges det i en dictionary.
-        if userObj["_id"] is not None:
+        if '_id' in userObj:
             if "statusText" in userObj:
                 self.statusText = userObj['statusText']
             self.status = userObj["status"]
             self.id = userObj["_id"]
+            self.displayName = userObj["name"]
+            self.email = userObj["emails"][0]["address"]
+
+    def getMail(self) -> str:
+        self.updateUser()
+        return self.email
+
+    def getDisplayName(self) -> str:
+        self.updateUser()
+        return self.displayName
         
     def getStatusText(self) -> str:
         # Returnerer statusText fra updateUser.
+        self.updateUser()
         return self.statusText
 
     def getStatus(self) -> str:
         # Returnerer status fra updateUser.
+        self.updateUser()
         return self.status
 
     def getID(self) -> str:
@@ -36,6 +51,7 @@ class MyUser:
         return self.id
 
     def getUsername(self) -> str:
+        self.updateUser()
         return self.username
 
     def setUserStatus(self, status_msg=None, set_avail=None):

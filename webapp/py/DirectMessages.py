@@ -22,6 +22,8 @@ class DM:
         tempRoomsNames = []
         n=1
         for name, id in self.rooms.items():
+            if name == "rocket.cat": continue
+            
             tempRoomsNames.append(name)
             n = n+1
 
@@ -33,7 +35,7 @@ class DM:
        return createDMResponse['success']
 
     def sendNewMsg(self, roomid, msg) -> bool:
-        sendMsgRespond = self.rocket.chat_post_message(msg, channel=roomid).json()
+        sendMsgRespond = self.rocket.chat_post_message(msg, room_id=roomid).json()
         return sendMsgRespond["success"]
 
     
@@ -53,6 +55,8 @@ class DM:
             if newMessages not in self.lastMsg:
                 self.lastMsg[newMessages] = self.newMsg[newMessages]
 
+
+    
     def checkForNewMsg(self) -> list:
         lastMessagesObj = self.rocket.im_list().json()
 
@@ -77,7 +81,25 @@ class DM:
         print("3 New msg: ", self.newMsg)
         
         return newMsgFromUsers
-                
+    
+    
+    def getMessages(self, channelID) -> tuple:
+        msg = self.rocket.im_history(channelID).json()
+
+        cleanedName = []
+        cleanedMsg = []
+        
+        # Itterer igennem beskeder fra rummet
+        if "messages" in msg:
+            msgliste = msg["messages"]
+            if type(msgliste) is list:
+                for xyz in reversed(msgliste):
+                    cleanedName.append(xyz["u"]["username"])
+                    cleanedMsg.append(xyz["msg"])
+
+                    
+        return cleanedName, cleanedMsg
+
 #Direct Message History, pprint(rocket.im_history('room_id').json()) Mangler i DMClass
     def printMessages(self, chosenDMChannel):
     # '''Printer beskeder fra en channel'''

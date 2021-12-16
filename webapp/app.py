@@ -55,10 +55,13 @@ def layout():
         dRooms = dmRooms.getRooms()
 
         # Finds ID for room by checking in room dict for Channel and DM rooms
-        if session['chosenRoomName'] in pRooms:
-            session['chosenRoom'] = pRooms[session['chosenRoomName']]
-        elif session['chosenRoomName'] in dRooms:
+        if session['chosenRoomName'] in dRooms:
             session['chosenRoom'] = dRooms[session['chosenRoomName']]
+            session['chosenRoomType'] = "DM"
+        elif session['chosenRoomName'] in pRooms:
+            session['chosenRoom'] = pRooms[session['chosenRoomName']]
+            session['chosenRoomType'] = "C"
+        
 
         return redirect(url_for('phd'))
 
@@ -67,18 +70,19 @@ def layout():
 # Chatroom page
 @app.route("/phd", methods=["GET", "POST"])
 def phd():
-
-    if request.method == "POST":
-
-        sendmsg = request.form
-        print("Send", sendmsg['textmsg'])
-        if dmRooms.sendNewMsg(session['chosenRoom'], sendmsg['textmsg']):
-            return redirect(url_for("phd"))
-
     logged_in()
     if session['is_logged_in']:
+        if request.method == "POST":
 
-        session["currentChatNames"], session["currentChatMsg"] = publicRooms.getMessages(session['chosenRoom'], 100)
+            sendmsg = request.form
+            print("Send", sendmsg['textmsg'])
+            if dmRooms.sendNewMsg(session['chosenRoom'], sendmsg['textmsg']):
+                return redirect(url_for("phd"))
+
+        if session['chosenRoomType'] == "DM":
+            session["currentChatNames"], session["currentChatMsg"] = dmRooms.getMessages(session['chosenRoom'])
+        elif session['chosenRoomType'] == "C":
+            session["currentChatNames"], session["currentChatMsg"] = publicRooms.getMessages(session['chosenRoom'], 100)
 
     else:
         return redirect(url_for("login"))
@@ -93,6 +97,8 @@ def home():
     if session['is_logged_in']:
         session['cRoomNames'] = publicRooms.getMyRoomsAsLists()
         session['dRoomNames'] = dmRooms.getMyRoomsAsLists()
+        session['displayName'] = myUser.getDisplayName()
+        session['myMailAddress'] = myUser.getMail()
 
         # if session.get('chosenRoom') == True:
         #     print(session['chosenRoom'])
@@ -119,18 +125,37 @@ def login():
     return render_template("login.html")
 
 # Profile Page
-@app.route("/profile")
+@app.route("/profile", methods=["GET", "POST"])
 def dashboard():
+
+    logged_in()
+
     if session['is_logged_in']:
-        pass
+        if request.method == "POST":
+
+            if request.form.get("submit_b"):
+                userreg_info = request.form
+
+                if rocket.users_update(user_id=myUser.getID(), 
+                name=userreg_info["displayname"], 
+                email=userreg_info["email"], 
+                username=userreg_info["username"], 
+                password=userreg_info["password"]).json()["success"] == True:
+
+                    return redirect(url_for("home")) 
+
+            elif request.form.get("cancel"):
+                return redirect(url_for("home")) 
+            
     else:
-        return redirect(url_for('home'))
+        return redirect(url_for("login"))
 
     return render_template("profile.html")
 
 # Settings Page
 @app.route("/settings")
 def settings():
+    logged_in()
 
     if session['is_logged_in']:
         pass
@@ -142,6 +167,7 @@ def settings():
 # Signup
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
+    logged_in()
 
     if session['is_logged_in'] is False:
         if request.method == "POST":
@@ -152,10 +178,11 @@ def signup():
                 reg_displayname = userreg_info["displayname"]
                 reg_username = userreg_info["username"]
                 reg_password = userreg_info["password"]
-                reg_email = "".join([reg_username, "@justa.chat"])
+                reg_email = userreg_info["email"]
 
                 if createAnonSession():
                     signuprespons = anonrocket.users_register(reg_email, reg_displayname, reg_password, reg_username).json()
+                    anonrocket.users_register()
                     print("signup: ", signuprespons["success"])
                     if signuprespons["success"]:
                         

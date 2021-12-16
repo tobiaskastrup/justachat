@@ -89,7 +89,7 @@
                             {% endfor %}
                             {{"Friends"}}
                             {% for a in range(session['dRoomNames']|length) %}
-                                <button type="submit" name="channelbutton" id="channelbutton" value="{{ session['cRoomNames'][a] }}">{{ session['dRoomNames'][a] }}</button>
+                                <button type="submit" name="channelbutton" id="channelbutton" value="{{ session['dRoomNames'][a] }}">{{ session['dRoomNames'][a] }}</button>
                             {% endfor %}
                         </form>   
                     {% endif %}
