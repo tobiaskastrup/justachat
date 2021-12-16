@@ -119,6 +119,7 @@ class PublicChannels:
                 for xyz in reversed(msgliste):
                     cleanedName.append(xyz["u"]["username"])
                     cleanedMsg.append(xyz["msg"])
+                    print(xyz["u"]["username"], ": ", xyz["msg"])
                     
         return cleanedName, cleanedMsg
 

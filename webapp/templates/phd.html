@@ -19,7 +19,7 @@
 {% block body %}
     <div>
         {% if session['is_logged_in'] == True %}
-            {% for a in range(session["currentChat"] | length) %}
+            {% for a in range(session["currentChatMsg"] | length) %}
                 {% if session['username'] == session["currentChatNames"][a] %}
                     <p style="text-align: right;">{{ session["currentChatMsg"][a] }}: <b>{{ session["currentChatNames"][a] }}</b></p>
                 {% else %}
