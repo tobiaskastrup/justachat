@@ -2,7 +2,7 @@
 
 <!-- Tab Title: [ Just a Chat | title ] -->
 {% block title %}
-    Room name
+    {{session['chosenRoomName']}}
 {% endblock %}
 
 <!-- Image icon for main content header -->
@@ -12,7 +12,7 @@
 
 <!-- Header title for main content -->
 {% block header %}
-    Room name
+    {{session['chosenRoomName']}}
 {% endblock %}
 
 <!-- Main page content -->
@@ -33,9 +33,9 @@
 <!-- Main page footer -->
 {% block bodyfooter %}
     <div class="messagebox wide">
-        <form action="">
+        <form action="/phd" method="POST">
             <div class="container spacing">
-                <input type="text" class="wide">
+                <input type="text" name="textmsg" id="textmsg" class="wide">
                 <button type="submit">Send</button>
             </div>
         </form>

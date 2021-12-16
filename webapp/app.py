@@ -50,19 +50,29 @@ def layout():
     if request.method == "POST":
         roomid_info = request.form
 
-        session['chosenRoom'] = roomid_info["channelbutton"]
+        session['chosenRoomName'] = roomid_info["channelbutton"]
+        session['chosenRoom'] = publicRooms.getMyRooms()[session['chosenRoomName']]
 
         return redirect(url_for('phd'))
 
     return render_template("layout.html")
 
 # Chatroom page
-@app.route("/phd")
+@app.route("/phd", methods=["GET", "POST"])
 def phd():
+
+    if request.method == "POST":
+
+        sendmsg = request.form
+        print("Send", sendmsg['textmsg'])
+        if dmRooms.sendNewMsg(session['chosenRoom'], sendmsg['textmsg']):
+            return redirect(url_for("phd"))
+
+    logged_in()
     if session['is_logged_in']:
+
         session["currentChatNames"], session["currentChatMsg"] = publicRooms.getMessages(session['chosenRoom'], 100)
-        print(session['chosenRoom']) 
-        print(session["currentChatMsg"])
+
     else:
         return redirect(url_for("login"))
 

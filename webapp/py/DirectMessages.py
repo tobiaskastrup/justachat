@@ -20,8 +20,8 @@ class DM:
        createDMResponse = self.rocket.im_create(username).json()
        return createDMResponse['success']
 
-    def sendNewMsg(self, recipient, msg) -> bool:
-        sendMsgRespond = self.rocket.chat_post_message(msg, channel=self.rooms[recipient]).json()
+    def sendNewMsg(self, roomid, msg) -> bool:
+        sendMsgRespond = self.rocket.chat_post_message(msg, channel=roomid).json()
         return sendMsgRespond["success"]
 
     
