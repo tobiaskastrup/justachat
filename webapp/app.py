@@ -51,7 +51,14 @@ def layout():
         roomid_info = request.form
 
         session['chosenRoomName'] = roomid_info["channelbutton"]
-        session['chosenRoom'] = publicRooms.getMyRooms()[session['chosenRoomName']]
+        pRooms = publicRooms.getMyRooms()
+        dRooms = dmRooms.getRooms()
+
+        # Finds ID for room by checking in room dict for Channel and DM rooms
+        if session['chosenRoomName'] in pRooms:
+            session['chosenRoom'] = pRooms[session['chosenRoomName']]
+        elif session['chosenRoomName'] in dRooms:
+            session['chosenRoom'] = dRooms[session['chosenRoomName']]
 
         return redirect(url_for('phd'))
 
@@ -84,7 +91,9 @@ def home():
     logged_in()
 
     if session['is_logged_in']:
-        session['cRoomNames'], session['cRoomIDs'] = publicRooms.getMyRoomsAsLists()
+        session['cRoomNames'] = publicRooms.getMyRoomsAsLists()
+        session['dRoomNames'] = dmRooms.getMyRoomsAsLists()
+
         # if session.get('chosenRoom') == True:
         #     print(session['chosenRoom'])
 
@@ -211,14 +220,6 @@ def logged_in():
     else:
         session['is_logged_in'] = True
     print("Logged in: ", session['is_logged_in'])
-
-# def updateChosenRoom(roomid):
-#     session['chosenRoom'] = roomid
-#     print(roomid)
-#     #print(session['cRoomNames'])
-#     #print(session['cRoomIDs'])
-
-# app.jinja_env.globals.update(updateChosenRoom=updateChosenRoom)
 
 #########################################################################
 #                               INITIALIZE                              #

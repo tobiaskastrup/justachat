@@ -15,6 +15,18 @@ class DM:
         self.updateMyRooms()
         return self.rooms
 
+    def getMyRoomsAsLists(self) -> list:
+
+        self.updateMyRooms()
+
+        tempRoomsNames = []
+        n=1
+        for name, id in self.rooms.items():
+            tempRoomsNames.append(name)
+            n = n+1
+
+        return tempRoomsNames
+
 # Create/Start Direct Message
     def createDMRoom(self, username):
        createDMResponse = self.rocket.im_create(username).json()

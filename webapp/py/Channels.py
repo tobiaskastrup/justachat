@@ -19,19 +19,17 @@ class PublicChannels:
                 for xyz in channelliste:
                     self.rooms[xyz["name"]] = xyz["_id"]
 
-    def getMyRoomsAsLists(self) -> tuple:
+    def getMyRoomsAsLists(self) -> list:
 
         self.updateMyRooms()
 
         tempRoomsNames = []
-        tempRoomsIDs = []
         n=1
         for name, id in self.myRooms.items():
             tempRoomsNames.append(name)
-            tempRoomsIDs.append(id)
             n = n+1
 
-        return tempRoomsNames, tempRoomsIDs
+        return tempRoomsNames
         
     def getMyRooms(self) -> dict:
         self.updateMyRooms()
