@@ -47,25 +47,50 @@ serverURL = 'http://justa.chat:3000/'
 # newpage.html is quick pasteable template for creating a new page
 @app.route("/behindthescenes", methods=["GET", "POST"])
 def layout():
-    if request.method == "POST":
-        roomid_info = request.form
+    logged_in()
+    if session['is_logged_in']:
+        if request.method == "POST":
+            roomid_info = request.form
 
-        session['chosenRoomName'] = roomid_info["channelbutton"]
-        pRooms = publicRooms.getMyRooms()
-        dRooms = dmRooms.getRooms()
+            session['chosenRoomName'] = roomid_info["channelbutton"]
+            pRooms = publicRooms.getMyRooms()
+            dRooms = dmRooms.getRooms()
 
-        # Finds ID for room by checking in room dict for Channel and DM rooms
-        if session['chosenRoomName'] in dRooms:
-            session['chosenRoom'] = dRooms[session['chosenRoomName']]
-            session['chosenRoomType'] = "DM"
-        elif session['chosenRoomName'] in pRooms:
-            session['chosenRoom'] = pRooms[session['chosenRoomName']]
-            session['chosenRoomType'] = "C"
-        
+            # Finds ID for room by checking in room dict for Channel and DM rooms
+            if session['chosenRoomName'] in dRooms:
+                session['chosenRoom'] = dRooms[session['chosenRoomName']]
+                session['chosenRoomType'] = "DM"
+            elif session['chosenRoomName'] in pRooms:
+                session['chosenRoom'] = pRooms[session['chosenRoomName']]
+                session['chosenRoomType'] = "C"
+            
 
-        return redirect(url_for('phd'))
+            return redirect(url_for('phd'))
 
     return render_template("layout.html")
+
+# Forgot page
+@app.route("/forgot", methods=["GET", "POST"])
+def forgot():
+    logged_in()
+    if session['is_logged_in'] == False:
+        if request.method == "POST":
+            forgotmail_info = request.form
+
+            if createAnonSession():
+                forgotrespons = anonrocket.users_forgot_password(forgotmail_info["email"]) .json()
+                
+                if forgotrespons["success"]:
+                    return redirect(url_for('home'))
+            
+                else:
+                    return redirect(url_for('forgot'))
+
+            rocket.users_forgot_password
+    else:
+        return redirect(url_for("home"))
+
+    return render_template("forgot.html")
 
 # Chatroom page
 @app.route("/phd", methods=["GET", "POST"])
@@ -183,13 +208,11 @@ def signup():
                 if createAnonSession():
                     signuprespons = anonrocket.users_register(reg_email, reg_displayname, reg_password, reg_username).json()
                     anonrocket.users_register()
-                    print("signup: ", signuprespons["success"])
                     if signuprespons["success"]:
-                        
                         return redirect(url_for('login'))
                 
                     else:
-                        pass
+                        return redirect(url_for('signup'))
 
             elif request.form.get("cancel"):
                 return redirect(url_for("home")) 

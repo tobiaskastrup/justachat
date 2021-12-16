@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Retreive forgotten password
+{% endblock %}
+
+{% block header %}
+Retreive forgotten password
+{% endblock %}
+
+{% block body %}
+<form action="/forgot" method="POST" class="signupform">
+    <div class="container">
+        <label for="email"><b>Your Email</b></label>
+        <input type="email" placeholder="Enter your email address" name="email" id="email" required> 
+    </div>
+
+    <div class="container">
+        <button type="submit" name="submit_b" value="submit_b">Send</button>
+    </div>
+
+    <div class="container">
+        <button type="submit" name="cancel" value="cancel">Cancel</button>
+    </div>
+</form>
+{% endblock %}
