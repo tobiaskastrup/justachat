@@ -18,7 +18,8 @@ class MyUser:
         userObj = self.rocket.me().json()
         # Hvis bruger info ikke eksisterer lægges det i en dictionary.
         if userObj["_id"] is not None:
-            self.statusText = userObj['statusText']
+            if "statusText" in userObj:
+                self.statusText = userObj['statusText']
             self.status = userObj["status"]
             self.id = userObj["_id"]
         
