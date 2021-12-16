@@ -242,6 +242,12 @@ nav {
     text-align: left;
 }
 
+.loginform {
+    max-width: 40%;
+}
+
+
+
 /* -------------------------- Switch Button -------------------------- */
 
 /* Switch-style checkbox button, primarily used to switch between light
