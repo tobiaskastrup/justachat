@@ -21,7 +21,7 @@ from webapp.py.DirectMessages import DM
 #########################################################################
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.urandom(24)
+app.config['SECRET_KEY'] = "ahd34h398rbisfb3i4tb5_sg43454wefgdff34"
 
 serverURL = 'http://justa.chat:3000/'
 
