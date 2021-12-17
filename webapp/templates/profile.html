@@ -13,37 +13,44 @@
 {% endblock %}
 
 {% block body %}
-    <form action="/profile" method="POST">
-            
+    <form action="/profile" method="POST" class="signupform">
         <div class="container">
             <label for="displayname"><b>Display name</b></label>
             <input type="text" value={{session['displayName']}} name="displayname" id="displayname" required> 
         </div>
+
         <div class="container">
             <label for="username"><b>Username</b></label>
             <input type="text" value={{session["username"]}} name="username" id="username" required> 
         </div>
+
         <div class="container">
             <label for="email"><b>Your Email</b></label>
             <input type="email" value={{session['myMailAddress']}} name="email" id="email" required> 
         </div>
-        <div>
-            <br>
-            Your password must have at least have: 8 characters, one small letter, one big letter, a number, and special sign
+
+        <div class="container paddingleft">
+            <p>Your password contain:<br>
+            · 8 characters<br>
+            · 1 lowercase letter<br>
+            · 1 uppercase letter<br>
+            · 1 number<br>
+            · 1 special character</p>
         </div>
+
         <div class ="container">
             <label for="password"><b>Update your password: </b></label>
             <input type="password" placeholder="Enter your desired Password" name="password" id="password" minlength="8" required>
         </div>
+
         <div class ="container">
             <label for="password"><b>Repeat the desired password</b></label>
             <input type="password" placeholder="Repeat password" name="password" id="password" minlength="8" required>
         </div>
+
         <div class="container">
+            <p></p>
             <button type="submit" name="submit_b" value="submit_b">Update</button>
-        </div>
-        <div class="container">
-            <button type="submit" name="cancel" value="cancel">Cancel</button>
         </div>
     </form>
 {% endblock %}

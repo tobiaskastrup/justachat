@@ -4,23 +4,24 @@
     Retreive forgotten password
 {% endblock %}
 
+{% block headerthumbnail %}
+    ../static/images/key.png
+{% endblock %}
+
 {% block header %}
-Retreive forgotten password
+    Retreive forgotten password
 {% endblock %}
 
 {% block body %}
-<form action="/forgot" method="POST" class="signupform">
+<form action="/forgot" method="POST" class="loginform">
     <div class="container">
         <label for="email"><b>Your Email</b></label>
         <input type="email" placeholder="Enter your email address" name="email" id="email" required> 
     </div>
 
     <div class="container">
+        <p></p>
         <button type="submit" name="submit_b" value="submit_b">Send</button>
-    </div>
-
-    <div class="container">
-        <button type="submit" name="cancel" value="cancel">Cancel</button>
     </div>
 </form>
 {% endblock %}
