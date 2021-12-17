@@ -7,7 +7,10 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 parent_dir_path = os.path.abspath(os.path.join(dir_path, os.pardir))
 sys.path.insert(0, parent_dir_path)
 
+import redis
 from flask import Flask, render_template, request, url_for, session, redirect
+from flask_session import Session
+
 
 from requests import sessions
 from rocketchat_API.rocketchat import RocketChat
@@ -21,7 +24,16 @@ from webapp.py.DirectMessages import DM
 #########################################################################
 
 app = Flask(__name__)
+
 app.config['SECRET_KEY'] = "ahd34h398rbisfb3i4tb5_sg43454wefgdff34"
+
+app.config['SESSION_TYPE'] = 'redis'
+app.config['SESSION_PERMANENT'] = False
+app.config['SESSION_USE_SIGNER'] = True
+app.config['SESSION_REDIS'] = redis.from_url('redis://localhost:6379')
+
+# Create and initialize the Flask-Session object AFTER `app` has been configured
+server_session = Session(app)
 
 serverURL = 'http://justa.chat:3000/'
 
