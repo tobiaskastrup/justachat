@@ -9,23 +9,12 @@ sys.path.insert(0, parent_dir_path)
 
 from flask import Flask, render_template, request, url_for, session, redirect
 
-from jinja2 import FileSystemLoader, Environment
-
-loader = FileSystemLoader('/tmp')
-env = Environment(autoescape=True, loader=loader)
-
-import threading
-import time
 from requests import sessions
 from rocketchat_API.rocketchat import RocketChat
 from rocketchat_API.APIExceptions.RocketExceptions import RocketAuthenticationException
 from webapp.py.MyUser import MyUser
 from webapp.py.Channels import PublicChannels
-from webapp.py.OtherUsers import OtherUsers
 from webapp.py.DirectMessages import DM
-from pprint import pprint
-
-
 
 #########################################################################
 #                                   X                                   #
@@ -35,8 +24,6 @@ app = Flask(__name__)
 app.secret_key = "asdas3tgdsv4"
 
 serverURL = 'http://justa.chat:3000/'
-
-
 
 #########################################################################
 #                                WEB PAGES                              #
