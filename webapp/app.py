@@ -21,9 +21,19 @@ from webapp.py.DirectMessages import DM
 #########################################################################
 
 app = Flask(__name__)
-app.secret_key = "asdas3tgdsv4"
+app.config['SECRET_KEY'] = os.urandom(24)
 
 serverURL = 'http://justa.chat:3000/'
+
+global rocket
+global myUser
+global dmRooms
+global publicRooms
+
+rocket = {}
+myUser = {}
+dmRooms = {}
+publicRooms = {}
 
 #########################################################################
 #                                WEB PAGES                              #
@@ -40,8 +50,8 @@ def layout():
             roomid_info = request.form
 
             session['chosenRoomName'] = roomid_info["channelbutton"]
-            pRooms = publicRooms.getMyRooms()
-            dRooms = dmRooms.getRooms()
+            pRooms = publicRooms[session['username']].getMyRooms()
+            dRooms = dmRooms[session['username']].getRooms()
 
             # Finds ID for room by checking in room dict for Channel and DM rooms
             if session['chosenRoomName'] in dRooms:
@@ -73,7 +83,6 @@ def forgot():
                 else:
                     return redirect(url_for('forgot'))
 
-            rocket.users_forgot_password
     else:
         return redirect(url_for("home"))
 
@@ -88,13 +97,13 @@ def phd():
 
             sendmsg = request.form
             print("Send", sendmsg['textmsg'])
-            if dmRooms.sendNewMsg(session['chosenRoom'], sendmsg['textmsg']):
+            if dmRooms[session['username']].sendNewMsg(session['chosenRoom'], sendmsg['textmsg']):
                 return redirect(url_for("phd"))
 
         if session['chosenRoomType'] == "DM":
-            session["currentChatNames"], session["currentChatMsg"] = dmRooms.getMessages(session['chosenRoom'])
+            session["currentChatNames"], session["currentChatMsg"] = dmRooms[session['username']].getMessages(session['chosenRoom'])
         elif session['chosenRoomType'] == "C":
-            session["currentChatNames"], session["currentChatMsg"] = publicRooms.getMessages(session['chosenRoom'], 100)
+            session["currentChatNames"], session["currentChatMsg"] = publicRooms[session['username']].getMessages(session['chosenRoom'], 100)
 
     else:
         return redirect(url_for("login"))
@@ -107,10 +116,10 @@ def home():
     logged_in()
 
     if session['is_logged_in']:
-        session['cRoomNames'] = publicRooms.getMyRoomsAsLists()
-        session['dRoomNames'] = dmRooms.getMyRoomsAsLists()
-        session['displayName'] = myUser.getDisplayName()
-        session['myMailAddress'] = myUser.getMail()
+        session['cRoomNames'] = publicRooms[session['username']].getMyRoomsAsLists()
+        session['dRoomNames'] = dmRooms[session['username']].getMyRoomsAsLists()
+        session['displayName'] = myUser[session['username']].getDisplayName()
+        session['myMailAddress'] = myUser[session['username']].getMail()
 
         # if session.get('chosenRoom') == True:
         #     print(session['chosenRoom'])
@@ -128,7 +137,7 @@ def login():
         logged_in()
 
         if createSession(session['username'], password):
-            makeChatObjects()
+            makeChatObjects(session['username'])
 
             return redirect(url_for('home'))
         else:
@@ -148,7 +157,7 @@ def dashboard():
             if request.form.get("submit_b"):
                 userreg_info = request.form
 
-                if rocket.users_update(user_id=myUser.getID(), 
+                if rocket[session['username']].users_update(user_id=myUser[session['username']].getID(), 
                 name=userreg_info["displayname"], 
                 email=userreg_info["email"], 
                 username=userreg_info["username"], 
@@ -218,8 +227,7 @@ def signup():
 def createSession(_nickname, _password) -> bool:
     with sessions.Session() as session:
         try:
-            global rocket
-            rocket = RocketChat(_nickname, _password, server_url=serverURL, session=session)
+            rocket[_nickname] = RocketChat(_nickname, _password, server_url=serverURL, session=session)
             return True
         except RocketAuthenticationException as e:
             print("Login or connection failed")
@@ -241,21 +249,22 @@ def createAnonSession():
             print("Something went wrong")
             return False
 
-def makeChatObjects():
-    global myUser
-    global dmRooms
-    global publicRooms
-    myUser = MyUser(username=session["username"], rocket=rocket)
-    dmRooms = DM(rocket, myUser.getUsername())
-    publicRooms = PublicChannels(rocket)
+def makeChatObjects(username):
+    myUser[username] = MyUser(username=session["username"], rocket=rocket[username])
+    dmRooms[username] = DM(rocket[username], myUser[username].getUsername())
+    publicRooms[username] = PublicChannels(rocket[session['username']])
 
 def logged_in():
-    try:
-        rocket
-    except NameError:
-        session['is_logged_in'] = False
+    if 'username' in session:
+        print(session['username'])
+        print(rocket)
+        if session['username'] in rocket:
+            session['is_logged_in'] = True
+        else:
+            session['is_logged_in'] = False
     else:
-        session['is_logged_in'] = True
+        session['is_logged_in'] = False
+        
     print("Logged in: ", session['is_logged_in'])
 
 #########################################################################
