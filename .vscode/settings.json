@@ -1,6 +1,0 @@
-{
-    "python.analysis.extraPaths": [
-        "./webapp"
-    ],
-    "python.pythonPath": "C:\\Users\\Bruger\\AppData\\Local\\Programs\\Python\\Python310\\python.exe"
-}
