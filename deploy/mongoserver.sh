@@ -34,7 +34,7 @@ sudo systemctl enable mongod && sudo systemctl restart mongod
 
 #mongo --eval "printjson(rs.initiate())"
 
-sudo ufw allow from 10.1.1.3 to any port 27017
+sudo ufw allow from 10.1.1.6 to any port 27017
 sudo ufw allow ssh
 sudo ufw --force enable
 
