@@ -203,7 +203,6 @@ def signup():
 
                 if createAnonSession():
                     signuprespons = anonrocket.users_register(reg_email, reg_displayname, reg_password, reg_username).json()
-                    anonrocket.users_register()
                     if signuprespons["success"]:
                         return redirect(url_for('login'))
                 
