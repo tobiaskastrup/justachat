@@ -353,14 +353,22 @@ az vm encryption enable -g $resource --name rockVM --disk-encryption-keyvault "$
 az vm encryption enable -g $resource --name dbVM --disk-encryption-keyvault "$vmvaultname"
 
 
-az vm run-command invoke -g $resource -n webVM --command-id RunShellScript \
---scripts "wget https://raw.githubusercontent.com/tobiaskastrup/justachat/main/deploy/webserver.sh?token=ATKY4HFLI2E7AJ4SPLJTIELBY5TVI -P /home/rockadmin/ \
-&& mv /home/rockadmin/webserver.sh* /var/lib/waagent/run-command/webserver.sh && sudo chmod a+x /var/lib/waagent/run-command/webserver.sh"
+az vm run-command invoke -g $resource -n dbVM --command-id RunShellScript --scripts "\
+curl -o mongoserver.sh https://raw.githubusercontent.com/tobiaskastrup/justachat/main/deploy/mongoserver.sh?token=ATKY4HGJVYQN6HMHP7K72HLBY5T3O \
+&& chmod a+x mongoserver.sh \
+&& ./mongoserver.sh"
 
-az vm run-command invoke -g $resource -n webVM --command-id RunShellScript --scripts .\webserver.sh
+az vm run-command invoke -g $resource -n rockVM --command-id RunShellScript --scripts "\
+curl -o rocketchatserver.sh https://raw.githubusercontent.com/tobiaskastrup/justachat/main/deploy/rocketchatserver.sh?token=ATKY4HBQND7WHOVBLX63PYDBY5TZG
+&& chmod a+x rocketchatserver.sh \
+&& ./rocketchatserver.sh"
 
-az vm run-command invoke  -g $resource -n webVM --command-id RunShellScript \
---scripts "su $login && cd ~ && touch hej.txt"
+az vm run-command invoke -g $resource -n webVM --command-id RunShellScript --scripts "\
+curl -o webserver.sh https://raw.githubusercontent.com/tobiaskastrup/justachat/main/deploy/webserver.sh?token=ATKY4HFLI2E7AJ4SPLJTIELBY5TVI \
+&& chmod a+x webserver.sh \
+&& ./webserver.sh"
+
+
 
 echo "
 
@@ -368,15 +376,16 @@ echo "
 
 
 
+#####################################################
+            JUSTA.CHAT er blevet deployed!
 
-############################################
-       JUSTA.CHAT er blevet deployed!
+Din offentlige IP til webserveren er:  $publicIP
+Du kan tilgå serverne via Bastian med ssh-key i
+keyvault'en.
+Du skal logge ind med brugeren:         $login
 
-Din IP til webserveren er:  $publicIP
-Din Bastion IP er:          $bastionIP
-
-           Husk at opdatere DNS
-############################################
+                Husk at opdatere DNS
+#####################################################
 
 
 

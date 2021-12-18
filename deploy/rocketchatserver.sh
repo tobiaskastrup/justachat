@@ -1,7 +1,7 @@
 # Rocketchat #
 ##############
 
-mongoserver="10.1.0.5"
+mongoserver="10.1.2.7"
 rocketadmin="rockadmin"
 rocketmail="admin@enode.dk"
 rocketpass="Mahman"
@@ -66,6 +66,6 @@ EOF
 
 sudo systemctl enable rocketchat && sudo systemctl start rocketchat
 
-sudo ufw allow from 10.1.0.5 to any port 3000
+sudo ufw allow from 10.1.1.6 to any port 3000
 sudo ufw allow ssh
 sudo ufw --force enable
