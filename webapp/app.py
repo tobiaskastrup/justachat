@@ -205,7 +205,6 @@ def signup():
                     signuprespons = anonrocket.users_register(reg_email, reg_displayname, reg_password, reg_username).json()
                     if signuprespons["success"]:
                         return redirect(url_for('login'))
-                
                     else:
                         return redirect(url_for('signup'))
 
@@ -263,8 +262,6 @@ def logged_in():
             session['is_logged_in'] = False
     else:
         session['is_logged_in'] = False
-        
-    print("Logged in: ", session['is_logged_in'])
 
 #########################################################################
 #                               INITIALIZE                              #
