@@ -121,9 +121,6 @@ def home():
         session['displayName'] = myUser[session['username']].getDisplayName()
         session['myMailAddress'] = myUser[session['username']].getMail()
 
-        # if session.get('chosenRoom') == True:
-        #     print(session['chosenRoom'])
-
     return render_template("home.html")
 
 # Login Page
@@ -202,7 +199,7 @@ def signup():
                 reg_email = userreg_info["email"]
 
                 if createAnonSession():
-                    signuprespons = anonrocket.users_register(reg_email, reg_displayname, reg_password, reg_username).json()
+                    signuprespons = anonrocket.users_register(email=reg_email, name=reg_displayname, password=reg_password, username=reg_username).json()
                     if signuprespons["success"]:
                         return redirect(url_for('login'))
                     else:
