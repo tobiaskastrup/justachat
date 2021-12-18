@@ -1,0 +1,385 @@
+##########################################################
+##########################################################
+#
+#                 GRUPPE 5's final script
+#
+#              Emil Cramer, Mathilde Elkjær, 
+#        Christian Ruhwedell & Tobias Jul Kastrup
+#
+#                   Lærer: Sally Maria
+#
+##########################################################
+#///////////////////// INSTRUKTIONER ////////////////////#
+##########################################################
+#
+#   Udskift vaultrandomIdentifier før hver gennemkørsel
+#   Alle parametre udover startIP og endIP 
+#   kan også ændres efter behov.
+#
+#    >> OBS!!! SKAL KØRES FRA AZURE CLOUD SHELL <<
+#
+####################### VARIABLER ########################
+
+location=northeurope
+randomIdentifier=group5
+
+vaultrandomIdentifier=ygdw43849
+
+sshvaultname="ssh-$vaultrandomIdentifier"
+vmvaultname="vm-$vaultrandomIdentifier"
+
+resource="resource-$randomIdentifier"
+server="server-$randomIdentifier"
+database="database-$randomIdentifier"
+
+login="rockadmin"
+password="Mahman12345!"
+
+
+##########################################################
+############## Opret en resource group ###################
+##########################################################
+
+echo "Creating $resource..."
+az group create \
+--name $resource \
+--location "$location" \
+--output table
+
+##########################################################
+############## Opretter et virtual network ###############
+################## med DDOS beskyttelse ##################
+##########################################################
+#
+#   Opretter Vnet:      myVNet      10.1.0.0/16
+#
+#   Subnet:     webSubnet     		10.1.0.0/24
+#               rocketBackEndSubnet 10.1.1.0/24
+#               dbBackEndSubnet     10.1.2.0/24
+#				AzureBastionSubnet  10.1.1.0/24
+#
+##########################################################
+
+# Opretter vores vnet med subnet til web VM
+az network vnet create \
+    --resource-group $resource \
+    --location $location \
+    --name myVNet \
+    --address-prefixes 10.1.0.0/16 \
+    --subnet-name webSubnet \
+    --subnet-prefixes 10.1.0.0/24
+
+# Opretter et subnet til Rocket.chat serveren
+az network vnet subnet create \
+    --resource-group $resource \
+    --name rocketBackEndSubnet \
+    --vnet-name myVNet \
+    --address-prefixes 10.1.1.0/24
+	
+# Opretter vores DB subnet 
+az network vnet subnet create \
+    --resource-group $resource \
+    --name dbBackEndSubnet \
+    --vnet-name myVNet \
+    --address-prefixes 10.1.2.0/24
+	
+# Opretter et bastion subnet
+az network vnet subnet create \
+    --resource-group $resource \
+    --name AzureBastionSubnet \
+    --vnet-name myVNet \
+    --address-prefixes 10.1.3.0/24
+
+
+
+##########################################################
+################## Opretter 2 offentlige IPs #############
+##########################################################
+
+
+# Opretter en public IP addresse til webserver (bruges til load balancer)
+az network public-ip create \
+    --resource-group $resource \
+    --name myPublicIP \
+    --sku Standard
+
+publicIP=$(az network public-ip show -g $resource -n myPublicIP --query 'ipAddress' -o tsv) 
+
+# Opretter en public IP address til Bastion
+az network public-ip create \
+    --resource-group $resource \
+    --name myBastionIP \
+    --sku Standard
+
+bastionIP=$(az network public-ip show -g $resource -n myBastionIP --query 'ipAddress' -o tsv)
+
+##########################################################
+###################### Keyvault ##########################
+##########################################################
+#
+# Opretter en keyvault til SSH keys
+# og derefter til disk encryption
+#
+##########################################################
+
+# Generer et password til at bruge med SSH keys
+SSH_KEY_PASSWORD=$(openssl rand -base64 20)
+
+# Generer SSH Keys til Linux VMs
+ssh-keygen \
+-t rsa \
+-b 4096 \
+-C "web-linux-vm" \
+-f ~/.ssh/web-linux-vm \
+-N "$SSH_KEY_PASSWORD"
+
+# Gemmer public og private key i variable og sletter den i den lokale mappe
+SSH_PUBLIC_KEY=$(cat ~/.ssh/web-linux-vm.pub) && \
+SSH_PRIVATE_KEY=$(cat ~/.ssh/web-linux-vm) && \
+rm -rf ~/.ssh/web-linux-vm*
+
+# Opretter en keyvault til SSH keys og gemmer vores secret der i
+az keyvault create \
+    --location $location \
+    --name "$sshvaultname" \
+    --resource-group $resource
+
+az keyvault secret set \
+--name "web-linux-vm-pub" \
+--vault-name "$sshvaultname" \
+--value "$SSH_PUBLIC_KEY" \
+--output none
+
+az keyvault secret set \
+--name $resource \
+--vault-name "$sshvaultname" \
+--value "$SSH_PRIVATE_KEY" \
+--output none
+
+az keyvault secret set \
+--name "web-linux-vm-password" \
+--vault-name "$sshvaultname" \
+--value "$SSH_KEY_PASSWORD" \
+--output none
+
+# Opretter en keyvault til VM encryption
+az keyvault create \
+    --location $location \
+    --name "$vmvaultname" \
+    --resource-group $resource \
+    --enabled-for-disk-encryption
+
+##########################################################
+####################### BASTION ##########################
+##########################################################
+
+
+# Opret bastion host
+az network bastion create \
+    --resource-group $resource \
+    --name myBastionHost \
+    --public-ip-address myBastionIP \
+    --vnet-name myVNet \
+    --location $location \
+    --scale-units 2 # Fixer en fejl i cli'en så man ikke kan lave bastian igennem cli pt
+
+
+##########################################################
+########### Opret en network security group ##############
+##########################################################
+
+# Opret en network security group
+az network nsg create \
+    --resource-group $resource \
+    --name myNSG
+
+# Opret network security group regel
+az network nsg rule create \
+    --resource-group $resource \
+    --nsg-name myNSG \
+    --name myNSGRuleHTTP \
+    --protocol '*' \
+    --direction inbound \
+    --source-address-prefix '*' \
+    --source-port-range '*' \
+    --destination-address-prefix '*' \
+    --destination-port-range 80 \
+    --access allow \
+    --priority 200
+	
+az network nsg rule create \
+    --resource-group $resource \
+    --nsg-name myNSG \
+    --name myNSGRuleHTTPS \
+    --protocol '*' \
+    --direction inbound \
+    --source-address-prefix '*' \
+    --source-port-range '*' \
+    --destination-address-prefix '*' \
+    --destination-port-range 443 \
+    --access allow \
+    --priority 250
+	
+# Opret network security group regel
+az network nsg rule create \
+	--resource-group $resource \
+	--nsg-name myNSG \
+	--name myNSGRuleRocket \
+	--protocol '*' \
+	--direction inbound \
+	--source-address-prefix '10.1.0.0/24' \
+	--source-port-range '*' \
+	--destination-address-prefix '10.1.1.0/24' \
+	--destination-port-range 3000 \
+	--access allow \
+	--priority 300
+
+# Opret network security group regel
+az network nsg rule create \
+	--resource-group $resource \
+	--nsg-name myNSG \
+	--name myNSGRuleDB \
+	--protocol '*' \
+	--direction inbound \
+	--source-address-prefix '10.1.1.0/24' \
+	--source-port-range '*' \
+	--destination-address-prefix '10.1.2.0/24' \
+	--destination-port-range 27017 \
+	--access allow \
+	--priority 350
+
+##########################################################
+##################### WEBSERVER VM #######################
+##########################################################
+#
+# Opretter 1 server til vores nginx proxy server,
+# flask application som kører på en gunicorn server
+# med IP-adressen 10.1.0.2 og en public IP
+#
+##########################################################
+
+az network nic create \
+	--resource-group $resource \
+	--name webNicVM \
+	--vnet-name myVNet \
+	--subnet webSubnet \
+	--public-ip-address myPublicIP \
+	--network-security-group myNSG \
+	--private-ip-address 10.1.0.5
+
+  
+az vm create \
+    --resource-group $resource \
+    --name webVM \
+    --image Canonical:0001-com-ubuntu-server-focal:20_04-lts:latest \
+	--size "Standard_DS1_v2" \
+    --ssh-key-values "$SSH_PUBLIC_KEY" \
+    --admin-username $login \
+    --admin-password $password \
+	--nics webNicVM \
+	--no-wait
+
+  
+##########################################################
+##################### ROCKETCHAT VM ######################
+##########################################################
+#
+# Opretter 1 server til rocket.chat application
+# som kører på nodejs med IP-adressen 10.1.1.3
+#
+##########################################################
+
+# Opret network interfaces til den virtualle maskine
+az network nic create \
+	--resource-group $resource \
+	--name rockNicVM \
+	--vnet-name myVNet \
+	--subnet rocketBackEndSubnet \
+	--network-security-group myNSG \
+	--private-ip-address 10.1.1.6
+
+# Opret virtual maskiner til rocketchat
+az vm create \
+    --resource-group $resource \
+    --name rockVM \
+    --nics rockNicVM \
+    --image Canonical:0001-com-ubuntu-server-focal:20_04-lts:latest \
+	--size "Standard_DS1_v2" \
+    --ssh-key-values "$SSH_PUBLIC_KEY" \
+    --admin-username $login \
+    --admin-password $password \
+    --no-wait
+	
+##########################################################
+######################## Database ########################
+##########################################################
+#
+#   Opretter 1 server til mongodb med IP-adressen 10.1.2.4
+#
+##########################################################
+
+# Opret network interfaces til den virtualle maskine
+az network nic create \
+	--resource-group $resource \
+	--name dbNicVM \
+	--vnet-name myVNet \
+	--subnet dbBackEndSubnet \
+	--network-security-group myNSG \
+	--private-ip-address 10.1.2.7
+
+# Opret virtual maskiner til rocketchat
+az vm create \
+    --resource-group $resource \
+    --name dbVM \
+    --nics dbNicVM \
+    --image Canonical:0001-com-ubuntu-server-focal:20_04-lts:latest \
+	--size "Standard_DS1_v2" \
+    --ssh-key-values "$SSH_PUBLIC_KEY" \
+    --admin-username $login \
+    --admin-password $password \
+    --no-wait
+
+##########################################################
+################ Krypter VM diskstorage ##################
+##########################################################
+#
+#   Kryptere vores 3 VMs med en encryption nøgle 
+#   som gemmes i den keyvault vi lavede tidligere
+#
+##########################################################
+
+az vm encryption enable -g $resource --name webVM --disk-encryption-keyvault "$vmvaultname"
+az vm encryption enable -g $resource --name rockVM --disk-encryption-keyvault "$vmvaultname"
+az vm encryption enable -g $resource --name dbVM --disk-encryption-keyvault "$vmvaultname"
+
+
+az vm run-command invoke -g $resource -n webVM --command-id RunShellScript \
+--scripts "wget https://raw.githubusercontent.com/tobiaskastrup/justachat/main/deploy/webserver.sh?token=ATKY4HFLI2E7AJ4SPLJTIELBY5TVI -P /home/rockadmin/ \
+&& mv /home/rockadmin/webserver.sh* /var/lib/waagent/run-command/webserver.sh && sudo chmod a+x /var/lib/waagent/run-command/webserver.sh"
+
+az vm run-command invoke -g $resource -n webVM --command-id RunShellScript --scripts .\webserver.sh
+
+az vm run-command invoke  -g $resource -n webVM --command-id RunShellScript \
+--scripts "su $login && cd ~ && touch hej.txt"
+
+echo "
+
+
+
+
+
+
+############################################
+       JUSTA.CHAT er blevet deployed!
+
+Din IP til webserveren er:  $publicIP
+Din Bastion IP er:          $bastionIP
+
+           Husk at opdatere DNS
+############################################
+
+
+
+
+
+"

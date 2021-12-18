@@ -32,7 +32,7 @@ rocketip="10.1.1.3"
 # Installere python pip3 og nginx til at eksekvere
 # Python og pipenv til at lave en environment til
 
-sudo apt update && sudo apt install python3-pip nginx -y
+sudo apt update && sudo apt install -y python3-pip nginx certbot python3-certbot-nginx
 sudo pip3 install pipenv
 
 # Tilføjer HOME/.local/bin til PATH, så pip kan bruges
@@ -46,7 +46,7 @@ sudo mkdir -p /var/www/justa.chat
 sudo chown -R $USER:www-data /var/www/justa.chat
 cd /var/www/justa.chat
 
-git clone https://tobiaskastrup:$gittoken@github.com/tobiaskastrup/justachat
+git clone https://tobiaskastrup:$gittoken@github.com/tobiaskastrup/justachat /var/www/justa.chat
 
 ########### pipenv indstillinger ###############
 #
@@ -83,7 +83,7 @@ sudo pipenv install flask gunicorn requests rocketchat_API
 sudo touch /var/www/justa.chat/wsgi.py
 
 cat << EOF |sudo tee -a /var/www/justa.chat/wsgi.py
-from justachat.webapp.app import app
+from webapp.app import app
 
 if __name__ == '__main__':
 	app.run(debug=False)
@@ -131,7 +131,7 @@ sudo systemctl start justachat.service
 cat << EOF |sudo tee -a /etc/nginx/conf.d/justachat.conf
 server {
 	listen 80;
-	server_name chat.justa.chat;
+	server_name justa.chat;
 
 	access_log /var/log/nginx/justachat.access.log;
 		error_log /var/log/nginx/justachat.error.log;
@@ -169,7 +169,6 @@ server {
         proxy_redirect off;
     }
 }
-
 EOF
 
 
@@ -177,6 +176,10 @@ sudo rm /etc/nginx/sites-enabled/default
 
 sudo systemctl enable nginx
 sudo systemctl start nginx
+
+#certbot run -n --nginx --agree-tos -d justa.chat -email admin@enode.dk --no-eff-email --redirect
+
+#sudo systemctl restart nginx
 
 sudo ufw allow http
 sudo ufw allow https
