@@ -128,7 +128,7 @@ sudo systemctl start justachat.service
 # nginx. 
 #
 ################################################
-cat << EOF |sudo tee -a /etc/nginx/sites-available/justachat.conf
+cat << EOF |sudo tee -a /etc/nginx/conf.d/justachat.conf
 server {
 	listen 80;
 	server_name chat.justa.chat;
@@ -143,7 +143,7 @@ server {
 }
 EOF
 
-cat << EOF |sudo tee -a /etc/nginx/sites-available/admin.justachat.conf
+cat << EOF |sudo tee -a /etc/nginx/conf.d/admin.justachat.conf
 upstream rocket_backend {
   server $rocketip:3000;
 }
@@ -157,12 +157,12 @@ server {
     location / {
         proxy_pass http://rocket_backend/;
         proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection "upgrade";
-        proxy_set_header Host $http_host;
+        proxy_set_header Host \$http_host;
 
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forward-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forward-For \$proxy_add_x_forwarded_for;
         proxy_set_header X-Forward-Proto http;
         proxy_set_header X-Nginx-Proxy true;
 
@@ -174,8 +174,6 @@ EOF
 
 
 sudo rm /etc/nginx/sites-enabled/default
-sudo ln -s /etc/nginx/sites-available/justachat.conf /etc/nginx/sites-enabled/
-sudo ln -s /etc/nginx/sites-available/admin.justachat.conf /etc/nginx/sites-enabled/
 
 sudo systemctl enable nginx
 sudo systemctl start nginx

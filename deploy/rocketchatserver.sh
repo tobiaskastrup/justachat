@@ -2,6 +2,9 @@
 ##############
 
 mongoserver="10.1.0.5"
+rocketadmin="rockadmin"
+rocketmail="admin@enode.dk"
+rocketpass="Mahman"
 
 sudo apt-get -y update && sudo apt-get install -y curl && curl -sL https://deb.nodesource.com/setup_12.x | sudo bash -
 
@@ -54,9 +57,9 @@ Environment=MONGO_URL=mongodb://$mongoserver:27017/rocketchat?replicaSet=rs01
 Environment=MONGO_OPLOG_URL=mongodb://$mongoserver:27017/local?replicaSet=rs01 
 Environment=ROOT_URL=http://admin.justa.chat
 Environment=PORT=3000
-Environment=ADMIN_USERNAME=rockadmin
-Environment=ADMIN_EMAIL=admin@enode.dk
-Environment=ADMIN_PASS=Mahman
+Environment=ADMIN_USERNAME=$rocketadmin
+Environment=ADMIN_EMAIL=$rocketmail
+Environment=ADMIN_PASS=$rocketpass
 [Install]
 WantedBy=multi-user.target
 EOF
