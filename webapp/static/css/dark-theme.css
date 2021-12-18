@@ -1,0 +1,495 @@
+/* ------------------------------------------------------------------- */
+/*                              VARIABLES                              */
+/* ------------------------------------------------------------------- */
+
+/* Defined variables, used for standardizing stylesheet */
+
+:root {
+    /* Colors */
+    --clr-black: #000;
+    --clr-darkgray: #333;
+    --clr-gray: #444;
+    --clr-lightgray: #CCC;
+    --clr-almostwhite: #EEE;
+    --clr-white: #FFF;
+
+    --clr-green: #008000;
+    --clr-lime: #00FF00;
+
+    /* Font size */
+    --fs-big: 1.75rem;
+    --fs-medium: 1.35rem;
+    --fs-small: 1rem;
+}
+
+
+
+/* ------------------------------------------------------------------- */
+/*                               DEFAULTS                              */
+/* ------------------------------------------------------------------- */
+
+/* Box sizing rules */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* Remove default margin */
+body,
+h1,
+h2,
+p,
+li { /* h3, h4, figure, figcaption, blockquote, dl, dd */
+    margin: 0;
+}
+
+/* Remove list styles on ul, ol elements within a list role */
+ul[role='list'],
+ol[role='list'] {
+    list-style: none;
+}
+
+/* Set core root defaults*/
+html:focus-within {
+    scroll-behavior: smooth;
+}
+
+/* Set core body defaults */
+body {
+    min-height: 100vh;
+    text-rendering: optimizeSpeed;
+}
+
+/* A elements that don't have a class get default styles */
+a:not([class]) {
+    text-decoration-skip-ink: auto;
+}
+
+/* Make images easier to work with */
+img,
+picture {
+    max-width: 100%;
+    display: inline-block; /* display: block; */
+}
+
+/* Inherit fonts for inputs and buttons */
+input,
+button,
+textarea,
+select {
+    font: inherit;
+}
+
+/* Remove all animations, transitions and smooth scroll for people who
+turned on motion-sickness reduction */
+@media (prefers-reduced-motion: reduce) {
+    html:focus-within {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+
+
+/* ------------------------------------------------------------------- */
+/*                                STYLE                                */
+/* ------------------------------------------------------------------- */
+
+/* Font default */
+* {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: var(--fs-small);
+}
+
+/* Style header one */
+h1 {
+    font-size: var(--fs-big);
+    font-weight: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Hide body scrollbar, we will put these inside containers later */
+body {
+    overflow: hidden;
+}
+
+/* Align content center, set header height, z- index above nav and main */
+header {
+    align-items: center;
+    height: 3rem;
+    line-height: 1;
+    z-index: 2;
+}
+
+/* Force bottom of page */
+footer {
+    bottom: 0;
+    min-height: 3rem;
+    position: absolute;
+    width: 100%;
+}
+
+/* z-index above main, below headers, fix position */
+nav {
+    height: 100vh;
+    position: fixed;
+    width: 18rem;
+    z-index: 1;
+}
+
+/* position next to nav instead of under */
+.main {
+    height: 100vh;
+    margin-left: 18rem;
+    position: relative;
+}
+
+/* holds wrappers and other elements, justifies content */
+.container {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem;
+}
+
+/* Holds elements */
+.wrapper {
+    display: flex;
+    padding: 0;
+}
+
+/* Adds horizontal margin between elements inside wrapper */
+.container.spacing > *,
+.wrapper.spacing > * {
+    margin: 0 0.25rem;
+}
+
+/* Main page content */
+.content {
+    height: 80vh;
+    padding: 0.5rem;
+    width: 100%;
+}
+
+/* Fixed height for icons and thumbnails */
+.icon,
+.thumbnail {
+    height: 1.75rem;
+}
+
+/* Thumbnails increase in size with mouseover */
+.thumbnail:hover {
+    transform: scale(1.1);
+}
+
+/* Adds extra padding */
+.extrapadding {
+    padding: 1rem;
+}
+
+/* Section of the navigation bar where discussions are listed */
+.discussionlist {
+    width: 100%;
+}
+
+/* Button for accessing discussions, located in navigation bar */
+.discussionlist button {
+    background: none;
+    border: none;
+    display: block;
+    padding: 0.5rem;
+    width: 100%;
+}
+
+.discussionlist button:hover {
+    cursor: pointer;
+}
+
+.channeltypedescriptor { /* HERE */
+    font-size: var(--fs-medium);
+    padding: 0.5rem;
+    text-align: center;
+    
+    color: var(--clr-lime);
+}
+
+/* Login button, located in navigation bar header */
+.loginbtn {
+    margin: auto;
+    padding: 0.5rem;
+    text-decoration: none;
+}
+
+.messagehistory {
+    border-radius: 0.25rem;
+    border-style: solid;
+    height: inherit;
+    margin: -0.25rem;
+    overflow-y: auto;
+}
+
+.messagehistory p {
+    margin: 0.25rem 0;
+}
+
+.wide {
+    width: 100%;
+}
+
+.you {
+    text-align: right;
+}
+
+.them {
+    text-align: left;
+}
+
+.loginform {
+    max-width: 25rem;
+}
+
+.signupform {
+    max-width: 40rem;
+}
+
+.tooltip {
+    position: relative;
+}
+
+.tooltip > .tooltiptextright {
+    border-radius: 0.5rem;
+    left: 110%;
+    padding: 0.3rem 1rem;
+    position: absolute;
+    text-align: center;
+    visibility: hidden;
+    white-space: nowrap;
+    z-index: 10;
+}
+
+.tooltip > .tooltiptextleft {
+    border-radius: 0.5rem;
+    right: 110%;
+    padding: 0.3rem 1rem;
+    position: absolute;
+    text-align: center;
+    visibility: hidden;
+    white-space: nowrap;
+    z-index: 10;
+}
+
+.tooltip:hover > .tooltiptextleft,
+.tooltip:hover > .tooltiptextright {
+    visibility: visible;
+}
+
+.paddingleft {
+    padding-left: 1.5rem;
+}
+
+
+
+/* -------------------------- Switch Button -------------------------- */
+
+/* Switch-style checkbox button, primarily used to switch between light
+and dark theme */
+
+/* Container and hitbox for switch */
+.switch {
+    display: inline-block;
+    position: relative;
+
+    height: 1.75rem;
+    width: 3rem;
+}
+
+/* Hides the checkbox */
+.switch > input {
+    opacity: 0;
+
+    height: 0;
+    width: 0;
+}
+
+/* Slider with transition animation */
+.slider {
+    position: absolute;
+    cursor: pointer;
+
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+
+    -webkit-transition: 400ms;
+    transition: 400ms;
+}
+
+/* Positioning for unchecked state */
+.slider:before{
+    position: absolute;
+    content: "";
+
+    height: 1.25rem;
+    width: 1.25rem;
+
+    bottom: 00.25rem;
+    left: 0.25rem;
+
+    -webkit-transition: 400ms;
+    transition: 400ms;
+}
+
+/* Positioning for checked state */
+input:checked + .slider:before {
+    -webkit-transform: translateX(1.25rem);
+    -ms-transform: translateX(1.25rem);
+    transform: translateX(1.25rem)
+}
+
+/* -------------------------- Dropdown Menu -------------------------- */
+
+/* Dropdown element */
+.dropdown {
+    display: inline-block;
+    position: relative;
+
+    margin-bottom: -1rem;
+    padding-bottom: 1rem;
+}
+
+/* Hides dropdown content by default */
+.dropdown-content {
+    display: none;
+    min-width: 10rem;
+    position: absolute;
+    z-index: 2;
+
+    margin-top: 0.65rem;
+    margin-left: -0.6rem;
+}
+
+/* Styles a and button element inside dropdown-content */
+.dropdown-content a,
+.dropdown-content button {
+    border: none;
+    display: block;
+    padding: 0.5rem 0.5rem;
+    text-align: left;
+    text-decoration: none;
+    width: 100%;
+}
+
+/* Styles a and button element inside dropdown-content on hover */
+.dropdown-content a:hover,
+.dropdown-content button {
+    cursor: pointer;
+}
+
+/* Unhides dropdown content when hovering dropdown element */
+.dropdown:hover > .dropdown-content {
+    display: block;
+}
+
+
+
+/* ------------------------------------------------------------------- */
+/*                               COLORS                                */
+/* ------------------------------------------------------------------- */
+
+/* All color references. Used for differentiating between light-theme
+and dark-theme stylesheets */
+
+body {
+    background: var(--clr-darkgray);
+    color: var(--clr-white);
+}
+
+nav {
+    background: var(--clr-gray);
+    color: var(--clr-white);
+}
+
+.navitems a {
+    color: var(--clr-white);
+}
+
+.navitems a:hover {
+    background: var(--clr-lime);
+}
+
+header, nav {
+    box-shadow: 0 0 0.1rem var(--clr-black);
+}
+
+.slider {
+    background: var(--clr-lightgray);
+}
+
+.slider:before {
+    background: var(--clr-white);
+}
+
+input:checked + .slider {
+    background: var(--clr-lime);
+}
+
+.dropdown-content a,
+.dropdown-content button {
+    color: var(--clr-white);
+    background: var(--clr-darkgray);
+}
+
+.dropdown-content a:hover,
+.dropdown-content button:hover {
+    background: var(--clr-lime);
+    color: var(--clr-black);
+}
+
+.discussionlist button {
+    color: var(--clr-white);
+}
+
+.discussionlist button:hover {
+    color: var(--clr-black);
+    background: var(--clr-lime);
+}
+
+.loginbtn {
+    background: var(--clr-darkgray);
+    color: var(--clr-white);
+}
+
+.loginbtn:hover {
+    background: var(--clr-lime);
+}
+
+.messagehistory {
+    background: var(--clr-gray);
+    border-color: var(--clr-white);
+}
+
+.boxshadow {
+    box-shadow: 0 0 0.1rem var(--clr-black);
+}
+
+.tooltip > .tooltiptextleft,
+.tooltip > .tooltiptextright {
+    background: var(--clr-darkgray);
+    color: var(--clr-white);
+}
+
+.icon,
+.thumbnail {
+    filter: invert(1);
+}
