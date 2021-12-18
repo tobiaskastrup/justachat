@@ -12,7 +12,7 @@
 # og står også for at levere static pages (HTML,
 # css, billeder osv)
 #
-#################### How to######################
+#################### How to #####################
 #
 # > nano install.sh
 # Tilføj scriptet til install.sh og gem
@@ -26,7 +26,7 @@
 # SKAL EVT OPDATES FØR BRUG !!!!!!!!!!
 
 gittoken="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"
-rocketip="10.1.0.6"
+rocketip="10.1.1.3"
 
 ########### apt install + www mappe #############
 # Installere python pip3 og nginx til at eksekvere
@@ -177,3 +177,8 @@ sudo rm /etc/nginx/sites-enabled/default
 
 sudo systemctl enable nginx
 sudo systemctl start nginx
+
+sudo ufw allow http
+sudo ufw allow https
+sudo ufw allow ssh
+sudo ufw --force enable

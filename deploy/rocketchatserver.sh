@@ -65,3 +65,7 @@ WantedBy=multi-user.target
 EOF
 
 sudo systemctl enable rocketchat && sudo systemctl start rocketchat
+
+sudo ufw allow from 10.1.0.2 to any port 3000
+sudo ufw allow ssh
+sudo ufw --force enable
