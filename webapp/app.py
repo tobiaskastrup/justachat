@@ -39,11 +39,9 @@ publicRooms = {}
 #                                WEB PAGES                              #
 #########################################################################
 
-# Placeholder: This is a web page structure reference
-# layout.html is base layout all other pages refer to
-# newpage.html is quick pasteable template for creating a new page
 @app.route("/behindthescenes", methods=["GET", "POST"])
 def layout():
+
     logged_in()
     if session['is_logged_in']:
         if request.method == "POST":
@@ -126,20 +124,27 @@ def home():
 # Login Page
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    # If løkke som kikker om der bliver lavet en POST request fra /login siden
     if request.method == "POST":
+        # Informationen der er indsat i text boksene 
+        # username og password gemmes i en dict login_info
         login_info = request.form
 
+        # Bruges username gemmes i en session, som bruges i mens man er logget ind
         session['username'] = login_info["username"]
         password = login_info["password"]
-        logged_in()
 
+        # Der forsøges at laves en session med login informationerne 
         if createSession(session['username'], password):
+            #Hvis det lykkes oprettes der user, DM og Channel objekter for bruger
             makeChatObjects(session['username'])
 
+            #Efter login omdiregeres brugeren til home siden
             return redirect(url_for('home'))
         else:
-            pass # Besked om login ikke virker
-
+            pass # Besked om login ikke virker (ikke implementeret)
+    
+    # login html template sendes til brugerens browser
     return render_template("login.html")
 
 # Profile Page

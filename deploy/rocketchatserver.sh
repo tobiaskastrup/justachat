@@ -6,7 +6,7 @@ rocketadmin="rockadmin"
 rocketmail="admin@enode.dk"
 rocketpass="Mahman"
 
-sudo apt-get -y update && sudo apt-get install -y curl && curl -sL https://deb.nodesource.com/setup_12.x | sudo bash -
+sudo apt -y update && sudo apt install -y curl && curl -sL https://deb.nodesource.com/setup_12.x | sudo bash -
 
 sudo apt update
 sudo apt install -y build-essential nodejs graphicsmagick

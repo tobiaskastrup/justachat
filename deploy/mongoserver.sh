@@ -6,7 +6,7 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD7
 wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
 echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
 sudo apt update
-sudo apt-get install -y build-essential mongodb-org
+sudo apt install -y build-essential mongodb-org
 
 #################
 # Vi skal tilføje DB serverens egen IP til dens config sådan her:
