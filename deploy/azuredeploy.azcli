@@ -17,7 +17,7 @@
 ####################### VARIABLER ########################
 
 location=northeurope
-randomIdentifier=group
+randomIdentifier=group5
 
 vaultrandomIdentifier=ygdw433379
 
@@ -52,7 +52,7 @@ az group create \
 #   Subnet:     webSubnet     		10.1.0.0/24
 #               rocketBackEndSubnet 10.1.1.0/24
 #               dbBackEndSubnet     10.1.2.0/24
-#				AzureBastionSubnet  10.1.1.0/24
+#				AzureBastionSubnet  10.1.3.0/24
 #   
 #    VMs:        webVM		        10.1.0.5
 #                RockVM		        10.1.1.6
@@ -94,12 +94,13 @@ az network vnet subnet create \
 ################## Opretter 2 offentlige IPs #############
 ##########################################################
 
-# Opretter en public IP addresse til webserver (bruges til load balancer)
+# Opretter en public IP addresse til webserveren
 az network public-ip create \
     --resource-group $resource \
     --name myPublicIP \
     --sku Standard
 
+# Gemmer vores IP til besked i slutningen af scriptet
 publicIP=$(az network public-ip show -g $resource -n myPublicIP --query 'ipAddress' -o tsv) 
 
 # Opretter en public IP address til Bastion
@@ -107,8 +108,6 @@ az network public-ip create \
     --resource-group $resource \
     --name myBastionIP \
     --sku Standard
-
-bastionIP=$(az network public-ip show -g $resource -n myBastionIP --query 'ipAddress' -o tsv)
 
 ##########################################################
 ###################### Keyvault ##########################
@@ -136,24 +135,28 @@ az keyvault create \
     --name "$sshvaultname" \
     --resource-group $resource
 
+# Gemmer en secret i keyvault'en med vores SSH public key
 az keyvault secret set \
 --name "justachat-pub" \
 --vault-name "$sshvaultname" \
 --value "$(cat ~/.ssh/justachat.pub)" \
 --output none
 
+# Gemmer en secret i keyvault'en med vores SSH private key
 az keyvault secret set \
---name $resource \
+--name "justachat-private" \
 --vault-name "$sshvaultname" \
 --value "$(cat ~/.ssh/justachat)" \
 --output none
 
+# Gemmer en secret i keyvault'en med vores SSH key password
 az keyvault secret set \
 --name "justachat-password" \
 --vault-name "$sshvaultname" \
 --value "$tempkey" \
 --output none
 
+# Laver en keyvault til vores disk encryption keys
 az keyvault create \
     --location $location \
     --name "$vmvaultname" \
@@ -182,7 +185,7 @@ az network nsg create \
     --resource-group $resource \
     --name myNSG
 
-# Opret network security group regel
+# Opret network security group (NSG) regel til HTTP trafik til webserveren
 az network nsg rule create \
     --resource-group $resource \
     --nsg-name myNSG \
@@ -195,7 +198,8 @@ az network nsg rule create \
     --destination-port-range 80 \
     --access allow \
     --priority 200
-	
+
+# Opret NSG regel til HTTPS trafik til webserveren
 az network nsg rule create \
     --resource-group $resource \
     --nsg-name myNSG \
@@ -209,7 +213,8 @@ az network nsg rule create \
     --access allow \
     --priority 250
 	
-# Opret network security group regel
+# Opret NSG regel til trafik fra webserveren til rocketchatserveren (over port 3000)
+# (i mellem de virtuelle subnets)
 az network nsg rule create \
 	--resource-group $resource \
 	--nsg-name myNSG \
@@ -223,7 +228,8 @@ az network nsg rule create \
 	--access allow \
 	--priority 300
 
-# Opret network security group regel
+# Opret NSG regel til trafik fra rocketchatserveren til mongodb serveren (over port 27017)
+# (i mellem de virtuelle subnets)
 az network nsg rule create \
 	--resource-group $resource \
 	--nsg-name myNSG \
@@ -243,10 +249,11 @@ az network nsg rule create \
 #
 # Opretter 1 server til vores nginx proxy server,
 # flask application som kører på en gunicorn server
-# med IP-adressen 10.1.0.2 og en public IP
+# med IP-adressen 10.1.0.5 og en public IP $publicIP
 #
 ##########################################################
 
+# Opret et network interface til den virtuelle maskine
 az network nic create \
 	--resource-group $resource \
 	--name webNicVM \
@@ -273,11 +280,11 @@ az vm create \
 ##########################################################
 #
 # Opretter 1 server til rocket.chat application
-# som kører på nodejs med IP-adressen 10.1.1.3
+# som kører på nodejs med IP-adressen 10.1.1.6
 #
 ##########################################################
 
-# Opret network interfaces til den virtualle maskine
+# Opret et network interface til den virtuelle maskine
 az network nic create \
 	--resource-group $resource \
 	--name rockNicVM \
@@ -302,11 +309,11 @@ az vm create \
 ######################## Database ########################
 ##########################################################
 #
-#   Opretter 1 server til mongodb med IP-adressen 10.1.2.4
+#   Opretter 1 server til mongodb med IP-adressen 10.1.2.7
 #
 ##########################################################
 
-# Opret network interfaces til den virtualle maskine
+# Opret et network interface til den virtuelle maskine
 az network nic create \
 	--resource-group $resource \
 	--name dbNicVM \
@@ -315,7 +322,7 @@ az network nic create \
 	--network-security-group myNSG \
 	--private-ip-address 10.1.2.7
 
-# Opret virtual maskiner til rocketchat
+# Opret virtual maskiner til mongodb
 az vm create \
     --resource-group $resource \
     --name dbVM \
@@ -327,6 +334,7 @@ az vm create \
     --admin-password $password \
     --no-wait
 
+# Venter på at alle VMs er oprettet med en vm wait
 az vm wait -g $resource -n webVM --created
 az vm wait -g $resource -n rockVM --created
 az vm wait -g $resource -n dbVM --created
@@ -342,34 +350,56 @@ az vm wait -g $resource -n dbVM --created
 #
 ##########################################################
 
+# Udkommenteret da Azure Trial kun tillader 4 vCPUs i alt nu, som ikke har 8 GB RAM
 #az vm encryption enable -g $resource --name webVM --disk-encryption-keyvault "$vmvaultname"
 #az vm encryption enable -g $resource --name rockVM --disk-encryption-keyvault "$vmvaultname"
 #az vm encryption enable -g $resource --name dbVM --disk-encryption-keyvault "$vmvaultname"
 
+# Fjerner ssh nøglerne fra vores cli storage account i azure
 rm -rf ~/.ssh/justachat*
 
+##########################################################
+################## VM scripts kørsel ####################
+##########################################################
+#
+# Med vm run-command kan vi kører shell scripts den at
+# ssh til maskinen først (hvilket vi ikke kan fra azure cli,
+# kun igennem en bastion forbindelse fra Azure Portalen)
+# Vi laver først en curl -o (som gemmer filen som det
+# efterfølgende filnavn, da der ellers kommer ?token=A*
+# med i navnent)
+# Så ændrer vi den til at kunne eksekveres med chmod a+x
+# og så kører vi scriptet med ./>scriptnavn<.sh
+#
+##########################################################
+
+# Script kørsel på MongoDB server
 az vm run-command invoke -g $resource -n dbVM --command-id RunShellScript --scripts "\
 curl -o mongoserver.sh https://raw.githubusercontent.com/tobiaskastrup/justachat/main/deploy/mongoserver.sh?token=ATKY4HGJVYQN6HMHP7K72HLBY5T3O &&\
 chmod a+x mongoserver.sh &&\
 ./mongoserver.sh"
 
+# Script kørsel på Rocketchat server
 az vm run-command invoke -g $resource -n rockVM --command-id RunShellScript --scripts "\
 curl -o rocketchatserver.sh https://raw.githubusercontent.com/tobiaskastrup/justachat/main/deploy/rocketchatserver.sh?token=ATKY4HBQND7WHOVBLX63PYDBY5TZG &&\
 chmod a+x rocketchatserver.sh  &&\
 ./rocketchatserver.sh"
 
+## Script kørsel på webserver
 az vm run-command invoke -g $resource -n webVM --command-id RunShellScript --scripts "\
 curl -o webserver.sh https://raw.githubusercontent.com/tobiaskastrup/justachat/main/deploy/webserver.sh?token=ATKY4HFLI2E7AJ4SPLJTIELBY5TVI && \
 chmod a+x webserver.sh && \
 ./webserver.sh"
 
+# Restarter nginx service igen, for at fixe dependencies måske ikke er helt klar endnu
 az vm run-command invoke -g $resource -n webVM --command-id RunShellScript --scripts "systemctl restart nginx"
-
+# Restarter mongo service igen, for at fixe dependencies måske ikke er helt klar endnu
 az vm run-command invoke -g $resource -n rockVM --command-id RunShellScript --scripts "systemctl restart rocketchat"
 
 
 #####################################################
-
+# AFSLUTTENDE BESKED EFTER FÆRDIG KØRSEL AF SCRIPT  #
+#####################################################
 echo "
 
 

@@ -224,18 +224,6 @@ def signup():
 #                               FUNCTIONS                               #
 #########################################################################
 
-def createSession(_nickname, _password) -> bool:
-    with sessions.Session() as session:
-        try:
-            rocket[_nickname] = RocketChat(_nickname, _password, server_url=serverURL, session=session)
-            return True
-        except RocketAuthenticationException as e:
-            print("Login or connection failed")
-            return False
-        except Exception as ve:
-            print("Something went wrong")
-            return False
-
 def createAnonSession():
     with sessions.Session() as session:
         try:
@@ -249,7 +237,26 @@ def createAnonSession():
             print("Something went wrong")
             return False
 
+#Oprettelse af en session og efterfølgende rocket opjekt, som er forbindelsen til vores rocketchat server
+def createSession(_nickname, _password) -> bool:
+    with sessions.Session() as session:
+        try:
+            #Forsøger at lave et objekt med login oplysningerne
+            rocket[_nickname] = RocketChat(_nickname, _password, server_url=serverURL, session=session)
+            return True
+        except RocketAuthenticationException as e:
+            # Hvis login oplysningerne er forkerte printer den en fejl besked
+            # !! Mangler at implementer besked til brugeren
+            print(_nickname, ": Login auth failed", e)
+            return False
+        except Exception as ve:
+            # Andre fejl giver følgende besked (fx manglende forbindelse)
+            print(_nickname, ": Something went wrong")
+            return False
+
 def makeChatObjects(username):
+    # Gemmer objekter af klasserne myUser, DM og PublicChannels 
+    #  som en value til key (ens username) i dict
     myUser[username] = MyUser(username=session["username"], rocket=rocket[username])
     dmRooms[username] = DM(rocket[username], myUser[username].getUsername())
     publicRooms[username] = PublicChannels(rocket[session['username']])
