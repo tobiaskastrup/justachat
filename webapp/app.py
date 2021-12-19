@@ -329,5 +329,9 @@ def logged_in():
 #                               INITIALIZE                              #
 #########################################################################
 
+# Her sættes de parameter som flask serveren skal starte med.
+# Vi starter dog appen fra wsgi.py på gunicorn serveren, hvorfor 
+# Dette kun bruges ved kørsel af app.py direkte
+
 if __name__ == "__main__":
     app.run(debug=True)
