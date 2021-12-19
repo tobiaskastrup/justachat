@@ -26,7 +26,7 @@
 # SKAL EVT OPDATES FØR BRUG !!!!!!!!!!
 
 gittoken="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"
-rocketip="10.1.1.3"
+rocketip="10.1.1.6"
 
 ########### apt install + www mappe #############
 # Installere python pip3 og nginx til at eksekvere

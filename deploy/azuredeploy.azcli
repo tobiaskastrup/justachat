@@ -23,10 +23,9 @@
 location=northeurope
 randomIdentifier=group5
 
-vaultrandomIdentifier=ygdw43849
+vaultrandomIdentifier=ygdw43249
 
-sshvaultname="ssh-$vaultrandomIdentifier"
-vmvaultname="vm-$vaultrandomIdentifier"
+vaultname="keyvault-$vaultrandomIdentifier"
 
 resource="resource-$randomIdentifier"
 server="server-$randomIdentifier"
@@ -123,51 +122,45 @@ bastionIP=$(az network public-ip show -g $resource -n myBastionIP --query 'ipAdd
 ##########################################################
 
 # Generer et password til at bruge med SSH keys
-SSH_KEY_PASSWORD=$(openssl rand -base64 20)
+tempkey=$(openssl rand -base64 20)
 
 # Generer SSH Keys til Linux VMs
 ssh-keygen \
 -t rsa \
 -b 4096 \
--C "web-linux-vm" \
--f ~/.ssh/web-linux-vm \
--N "$SSH_KEY_PASSWORD"
+-C "justachat" \
+-f ~/.ssh/justachat \
+-N "$tempkey"
 
 # Gemmer public og private key i variable og sletter den i den lokale mappe
-SSH_PUBLIC_KEY=$(cat ~/.ssh/web-linux-vm.pub) && \
-SSH_PRIVATE_KEY=$(cat ~/.ssh/web-linux-vm) && \
-rm -rf ~/.ssh/web-linux-vm*
+SSH_PUBLIC_KEY=$(cat ~/.ssh/justachat.pub)
+SSH_PRIVATE_KEY=$(cat ~/.ssh/justachat)
+rm -rf ~/.ssh/justachat*
 
 # Opretter en keyvault til SSH keys og gemmer vores secret der i
 az keyvault create \
     --location $location \
-    --name "$sshvaultname" \
-    --resource-group $resource
+    --name "$vaultname" \
+    --resource-group $resource \
+    --enabled-for-disk-encryption
 
 az keyvault secret set \
---name "web-linux-vm-pub" \
---vault-name "$sshvaultname" \
---value "$SSH_PUBLIC_KEY" \
+--name "justachat-pub" \
+--vault-name "$vaultname" \
+--value "$(cat ~/.ssh/justachat.pub)" \
 --output none
 
 az keyvault secret set \
 --name $resource \
---vault-name "$sshvaultname" \
---value "$SSH_PRIVATE_KEY" \
+--vault-name "$vaultname" \
+--value "$(cat ~/.ssh/justachat)" \
 --output none
 
 az keyvault secret set \
---name "web-linux-vm-password" \
---vault-name "$sshvaultname" \
---value "$SSH_KEY_PASSWORD" \
+--name "justachat-password" \
+--vault-name "$vaultname" \
+--value "$tempkey" \
 --output none
-
-# Opretter en keyvault til VM encryption
-az keyvault create \
-    --location $location \
-    --name "$vmvaultname" \
-    --resource-group $resource \
-    --enabled-for-disk-encryption
 
 ##########################################################
 ####################### BASTION ##########################
@@ -273,7 +266,7 @@ az vm create \
     --name webVM \
     --image Canonical:0001-com-ubuntu-server-focal:20_04-lts:latest \
 	--size "Standard_DS1_v2" \
-    --ssh-key-values "$SSH_PUBLIC_KEY" \
+    --ssh-key-values "$(cat ~/.ssh/justachat.pub)" \
     --admin-username $login \
     --admin-password $password \
 	--nics webNicVM \
@@ -305,7 +298,7 @@ az vm create \
     --nics rockNicVM \
     --image Canonical:0001-com-ubuntu-server-focal:20_04-lts:latest \
 	--size "Standard_DS1_v2" \
-    --ssh-key-values "$SSH_PUBLIC_KEY" \
+    --ssh-key-values "$(cat ~/.ssh/justachat.pub)" \
     --admin-username $login \
     --admin-password $password \
     --no-wait
@@ -334,7 +327,7 @@ az vm create \
     --nics dbNicVM \
     --image Canonical:0001-com-ubuntu-server-focal:20_04-lts:latest \
 	--size "Standard_DS1_v2" \
-    --ssh-key-values "$SSH_PUBLIC_KEY" \
+    --ssh-key-values "$(cat ~/.ssh/justachat.pub)" \
     --admin-username $login \
     --admin-password $password \
     --no-wait
@@ -348,25 +341,28 @@ az vm create \
 #
 ##########################################################
 
-az vm encryption enable -g $resource --name webVM --disk-encryption-keyvault "$vmvaultname"
-az vm encryption enable -g $resource --name rockVM --disk-encryption-keyvault "$vmvaultname"
-az vm encryption enable -g $resource --name dbVM --disk-encryption-keyvault "$vmvaultname"
+az vm wait -g $resource -n webVM --created
+az vm encryption enable -g $resource --name webVM --disk-encryption-keyvault "$vaultname"
+az vm wait -g $resource -n rockVM --created
+az vm encryption enable -g $resource --name rockVM --disk-encryption-keyvault "$vaultname"
+az vm wait -g $resource -n dbVM --created
+az vm encryption enable -g $resource --name dbVM --disk-encryption-keyvault "$vaultname"
 
 
 az vm run-command invoke -g $resource -n dbVM --command-id RunShellScript --scripts "\
-curl -o mongoserver.sh https://raw.githubusercontent.com/tobiaskastrup/justachat/main/deploy/mongoserver.sh?token=ATKY4HGJVYQN6HMHP7K72HLBY5T3O \
-&& chmod a+x mongoserver.sh \
-&& ./mongoserver.sh"
+curl -o mongoserver.sh https://raw.githubusercontent.com/tobiaskastrup/justachat/main/deploy/mongoserver.sh?token=ATKY4HGJVYQN6HMHP7K72HLBY5T3O &&\
+chmod a+x mongoserver.sh &&\
+./mongoserver.sh"
 
 az vm run-command invoke -g $resource -n rockVM --command-id RunShellScript --scripts "\
-curl -o rocketchatserver.sh https://raw.githubusercontent.com/tobiaskastrup/justachat/main/deploy/rocketchatserver.sh?token=ATKY4HBQND7WHOVBLX63PYDBY5TZG
-&& chmod a+x rocketchatserver.sh \
-&& ./rocketchatserver.sh"
+curl -o rocketchatserver.sh https://raw.githubusercontent.com/tobiaskastrup/justachat/main/deploy/rocketchatserver.sh?token=ATKY4HBQND7WHOVBLX63PYDBY5TZG &&\
+chmod a+x rocketchatserver.sh  &&\
+./rocketchatserver.sh"
 
 az vm run-command invoke -g $resource -n webVM --command-id RunShellScript --scripts "\
-curl -o webserver.sh https://raw.githubusercontent.com/tobiaskastrup/justachat/main/deploy/webserver.sh?token=ATKY4HFLI2E7AJ4SPLJTIELBY5TVI \
-&& chmod a+x webserver.sh \
-&& ./webserver.sh"
+curl -o webserver.sh https://raw.githubusercontent.com/tobiaskastrup/justachat/main/deploy/webserver.sh?token=ATKY4HFLI2E7AJ4SPLJTIELBY5TVI && \
+chmod a+x webserver.sh && \
+./webserver.sh"
 
 
 
@@ -383,6 +379,10 @@ Din offentlige IP til webserveren er:  $publicIP
 Du kan tilgå serverne via Bastian med ssh-key i
 keyvault'en.
 Du skal logge ind med brugeren:         $login
+
+Setup rocketchat på:    http://admin.justa.chat/
+        Admin user:     rockadmin
+        Admin pass:     Mahman
 
                 Husk at opdatere DNS
 #####################################################

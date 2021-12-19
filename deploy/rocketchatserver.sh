@@ -66,6 +66,10 @@ EOF
 
 sudo systemctl enable rocketchat && sudo systemctl start rocketchat
 
-sudo ufw allow from 10.1.1.6 to any port 3000
+sudo ufw allow from 10.1.0.5 to any port 3000
 sudo ufw allow ssh
 sudo ufw --force enable
+
+sleep 5
+
+sudo systemctl restart rocketchat

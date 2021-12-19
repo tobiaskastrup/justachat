@@ -23,7 +23,7 @@ from webapp.py.DirectMessages import DM
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "ahd34h398rbisfb3i4tb5_sg43454wefgdff34"
 
-serverURL = 'http://justa.chat:3000/'
+serverURL = 'http://10.1.1.6:3000/'
 
 global rocket
 global myUser
