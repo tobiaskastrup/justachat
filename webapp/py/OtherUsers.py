@@ -1,3 +1,13 @@
+#########################################################################
+#                              OTHERUSERS                               #
+#########################################################################
+#
+#       Klasse som skal bruges til opdatere andre brugers data
+#
+#                   ER IKKE BLEVET IMPLEMENTERET!
+#
+#########################################################################
+
 from pprint import pp, pprint
 from rocketchat_API.rocketchat import RocketChat
 

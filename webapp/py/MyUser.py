@@ -1,3 +1,12 @@
+#########################################################################
+#                                MYUSERS                                #
+#########################################################################
+#
+#       Klasse som skal bruges til hente og opdatere clientens
+#                bruger information fra Rocket.chat
+#
+#########################################################################
+
 from pprint import pprint
 class MyUser:
 
@@ -12,8 +21,6 @@ class MyUser:
 
         if username is not None:
             self.updateUser()
-        #else:
-            #
         
 
     def updateUser(self):
@@ -29,6 +36,7 @@ class MyUser:
             self.email = userObj["emails"][0]["address"]
 
     def getMail(self) -> str:
+        # Returnerer statusText
         self.updateUser()
         return self.email
 
@@ -37,22 +45,25 @@ class MyUser:
         return self.displayName
         
     def getStatusText(self) -> str:
-        # Returnerer statusText fra updateUser.
+        # Returnerer statusText
         self.updateUser()
         return self.statusText
 
     def getStatus(self) -> str:
-        # Returnerer status fra updateUser.
+        # Returnerer status
         self.updateUser()
         return self.status
 
     def getID(self) -> str:
-        # Returnerer eget ID fra updateUser.
+        # Returnerer eget ID
         return self.id
 
     def getUsername(self) -> str:
+        # Returnerer eget usernavn
         self.updateUser()
         return self.username
+
+    ######################## IKKE IMPLEMENTERET ###########################
 
     def setUserStatus(self, status_msg=None, set_avail=None):
         '''Sætter en availability status & status besked for brugeren for brugeren.'''

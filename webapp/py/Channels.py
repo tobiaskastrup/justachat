@@ -20,6 +20,7 @@ class PublicChannels:
                     self.rooms[xyz["name"]] = xyz["_id"]
 
     def getMyRoomsAsLists(self) -> list:
+        '''Retunerer alle rummenes navn, man er i, som en list'''
 
         self.updateMyRooms()
 
@@ -32,6 +33,7 @@ class PublicChannels:
         return tempRoomsNames
         
     def getMyRooms(self) -> dict:
+        '''Retunere alle rum man self er i som et dict'''
         self.updateMyRooms()
         return self.myRooms
 
@@ -39,13 +41,6 @@ class PublicChannels:
         '''Returnerer Channel ID'''
         return self.rooms[roomName]
 
-    def deleteChannel(self, roomName) -> bool:
-        '''Sletter en Channel'''
-        roomID = self.rooms[roomName]
-        deleteResponse = self.rocket.channels_delete(roomID).json()
-        return deleteResponse["success"]
-
-    
     def updateMyRooms(self) -> str:
         '''Opdaterer brugerens egen channel liste'''
         mychannelobj = self.rocket.channels_list_joined().json()
@@ -56,7 +51,49 @@ class PublicChannels:
                 for xyz in channelliste:
                     self.myRooms[xyz["name"]] = xyz["_id"]
 
-    
+    def getMessages(self, channelID, msgCount) -> tuple:
+        msg = self.rocket.channels_history(channelID, count=msgCount).json()
+
+        cleanedName = []
+        cleanedMsg = []
+        
+        # Itterer igennem beskeder fra rummet
+        if "messages" in msg:
+            msgliste = msg["messages"]
+            if type(msgliste) is list:
+                for xyz in reversed(msgliste):
+                    cleanedName.append(xyz["u"]["username"])
+                    cleanedMsg.append(xyz["msg"])
+
+                    
+        return cleanedName, cleanedMsg
+
+    #########################################################################   
+    #                     IKKE IMPLEMENTERET I APP.PY                       #
+    #########################################################################
+
+    def inviteUser(self, roomName, userObject) -> bool:
+        '''Inviterer en bruger til en channel'''
+        roomID = self.myRooms[roomName]
+        userID = userObject.getID()
+        inviteResponse = self.rocket.channels_invite(roomID, userID).json()
+        return inviteResponse["success"]
+
+    def createChannel(self, newChannelName) -> bool:
+        '''Laver en ny channel'''
+        newChannelNameResponse = self.rocket.channels_create(newChannelName).json()
+        return newChannelNameResponse["success"]
+
+    def deleteChannel(self, roomName) -> bool:
+        '''Sletter en Channel'''
+        roomID = self.rooms[roomName]
+        deleteResponse = self.rocket.channels_delete(roomID).json()
+        return deleteResponse["success"]
+
+    #########################################################################
+    #                                 DEBUG                                 #
+    #########################################################################
+
     def chooseMyRoom(self):
         '''Vælger et rum fra egen channel liste'''
         # Printer mulige rum
@@ -81,47 +118,14 @@ class PublicChannels:
                 print("\nFail")
         
         return tempRooms[i]
-
-
-    def inviteUser(self, roomName, userObject) -> bool:
-        '''Inviterer en bruger til en channel'''
-        roomID = self.myRooms[roomName]
-        userID = userObject.getID()
-        inviteResponse = self.rocket.channels_invite(roomID, userID).json()
-        return inviteResponse["success"]
-
-    def createChannel(self, newChannelName) -> bool:
-        '''Laver en ny channel'''
-        newChannelNameResponse = self.rocket.channels_create(newChannelName).json()
-        return newChannelNameResponse["success"]
-
     def printMessages(self, chosenPrivateChannel, msgCount):
-        '''Printer beskeder fra en channel'''
-        msg = self.rocket.channels_history(self.myRooms[chosenPrivateChannel], count=msgCount).json()
+    '''Printer beskeder fra en channel'''
+    msg = self.rocket.channels_history(self.myRooms[chosenPrivateChannel], count=msgCount).json()
 
-        # Itterer igennem beskeder fra rummet
-        print(f"\n<<< Beskeder fra {chosenPrivateChannel} >>>")
-        if "messages" in msg:
-            msgliste = msg["messages"]
-            if type(msgliste) is list:
-                for xyz in reversed(msgliste):
-                    print(f'{xyz["u"]["username"]}:     {xyz["msg"]}')
-
-    def getMessages(self, channelID, msgCount) -> tuple:
-        msg = self.rocket.channels_history(channelID, count=msgCount).json()
-
-        cleanedName = []
-        cleanedMsg = []
-        
-        # Itterer igennem beskeder fra rummet
-        if "messages" in msg:
-            msgliste = msg["messages"]
-            if type(msgliste) is list:
-                for xyz in reversed(msgliste):
-                    cleanedName.append(xyz["u"]["username"])
-                    cleanedMsg.append(xyz["msg"])
-
-                    
-        return cleanedName, cleanedMsg
-
-
+    # Itterer igennem beskeder fra rummet
+    print(f"\n<<< Beskeder fra {chosenPrivateChannel} >>>")
+    if "messages" in msg:
+        msgliste = msg["messages"]
+        if type(msgliste) is list:
+            for xyz in reversed(msgliste):
+                print(f'{xyz["u"]["username"]}:     {xyz["msg"]}')
