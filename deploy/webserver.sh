@@ -177,9 +177,9 @@ sudo rm /etc/nginx/sites-enabled/default
 sudo systemctl enable nginx
 sudo systemctl start nginx
 
-#certbot run -n --nginx --agree-tos -d justa.chat -email admin@enode.dk --no-eff-email --redirect
+certbot run -n --nginx --agree-tos -d justa.chat -m admin@enode.dk --no-eff-email --redirect
 
-#sudo systemctl restart nginx
+sudo systemctl restart nginx
 
 sudo ufw allow http
 sudo ufw allow https

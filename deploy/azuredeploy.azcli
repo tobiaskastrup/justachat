@@ -363,6 +363,11 @@ curl -o webserver.sh https://raw.githubusercontent.com/tobiaskastrup/justachat/m
 chmod a+x webserver.sh && \
 ./webserver.sh"
 
+az vm run-command invoke -g $resource -n webVM --command-id RunShellScript --scripts "systemctl restart nginx"
+
+az vm run-command invoke -g $resource -n rockVM --command-id RunShellScript --scripts "systemctl restart rocketchat"
+
+
 #####################################################
 
 echo "
