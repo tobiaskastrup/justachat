@@ -40,12 +40,13 @@ sudo pip3 install pipenv
 sudo echo "export PATH="$HOME/.local/bin:$PATH"" >> ~/.bashrc
 source ~/.bashrc
 
-# Laver en mappe til vores projekt
-# Sætter tillader for mappen til $USER:www-data
+# Laver en mappe til vores projekt,
+# sætter tillader for mappen til $USER:www-data
 sudo mkdir -p /var/www/justa.chat
 sudo chown -R $USER:www-data /var/www/justa.chat
 cd /var/www/justa.chat
 
+# Henter vores webapplication fra github og gemmer i /var/www/justa.chat
 git clone https://tobiaskastrup:$gittoken@github.com/tobiaskastrup/justachat /var/www/justa.chat
 
 ########### pipenv indstillinger ###############
@@ -59,6 +60,7 @@ git clone https://tobiaskastrup:$gittoken@github.com/tobiaskastrup/justachat /va
 sudo mkdir -p /var/www/justa.chat/.venv
 sudo touch /var/www/justa.chat/.env
 
+# Tilføjer vores app startup variabler til .env
 cat << EOF |sudo tee -a /var/www/justa.chat/.env
 FLASK_APP=wsgi.py
 FLASK_ENV=production
@@ -91,6 +93,7 @@ EOF
 
 ############## justachat.service ###############
 #
+# Opretter en mappe til gunicorn logs
 # Opretter en servicefil til at starte vores 
 # gunicorn server op og enabler og starter den
 # efterfølgende
@@ -100,6 +103,7 @@ EOF
 sudo mkdir -p /var/log/gunicorn
 sudo chown -R $USER:www-data /var/log/gunicorn
 
+# Indsætter service konfiguration i justachat.service
 cat << EOF |sudo tee -a /etc/systemd/system/justachat.service
 [Unit]
 Description=justachat.service - A Flask application run with Gunicorn.
@@ -115,8 +119,8 @@ ExecStart=/var/www/justa.chat/.venv/bin/gunicorn --workers 1 --threads 10 --work
 WantedBy=multi-user.target
 EOF
 
-sudo systemctl enable justachat.service 
-sudo systemctl start justachat.service 
+# Enabler (sørge for service start ved reboot) og starter vores justachat.service 
+sudo systemctl enable justachat.service && sudo systemctl start justachat.service 
 
 ########### nginx + justachat.conf #############
 #
@@ -143,6 +147,9 @@ server {
 }
 EOF
 
+# Tilføjer indhold til /etc/nginx/conf.d/admin.justachat.conf filen, 
+# som laver en proxy til vores rocketchat side 
+# rocketip:3000 > admin.justa.chat
 cat << EOF |sudo tee -a /etc/nginx/conf.d/admin.justachat.conf
 upstream rocket_backend {
   server $rocketip:3000;
@@ -170,18 +177,22 @@ server {
     }
 }
 EOF
-
-
+# Sletter default nginx config og enabler og starter nginx service
 sudo rm /etc/nginx/sites-enabled/default
-
-sudo systemctl enable nginx
-sudo systemctl start nginx
-
+sudo systemctl enable nginx && sudo systemctl start nginx
+# Henter et SSL ertifikat fra Let's Encrypt
 certbot run -n --nginx --agree-tos -d justa.chat -m admin@enode.dk --no-eff-email --redirect
-
+# Genstarter nginx efter SSL certifikat er implmenteret
 sudo systemctl restart nginx
 
+############### UFW (Firewall) ################
+#
+# Vi opsætter en UFW (Uncomplicated Firewall)
+# som kun tillader http, https og ssh portene er
+# åbne i vores VM fra Bastion subnettet
+#
+################################################
 sudo ufw allow http
 sudo ufw allow https
-sudo ufw allow ssh
+sudo ufw allow from 10.1.3.0/24 to any port 22 #SSH from bastion
 sudo ufw --force enable
