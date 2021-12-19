@@ -6,24 +6,20 @@
 #              Emil Cramer, Mathilde Elkjær, 
 #        Christian Ruhwedell & Tobias Jul Kastrup
 #
-#                   Lærer: Sally Maria
-#
 ##########################################################
 #///////////////////// INSTRUKTIONER ////////////////////#
 ##########################################################
 #
 #   Udskift vaultrandomIdentifier før hver gennemkørsel
-#   Alle parametre udover startIP og endIP 
-#   kan også ændres efter behov.
-#
+#   
 #    >> OBS!!! SKAL KØRES FRA AZURE CLOUD SHELL <<
 #
 ####################### VARIABLER ########################
 
 location=northeurope
-randomIdentifier=group5
+randomIdentifier=group
 
-vaultrandomIdentifier=ygdw43249
+vaultrandomIdentifier=ygdw43349
 
 vaultname="keyvault-$vaultrandomIdentifier"
 
