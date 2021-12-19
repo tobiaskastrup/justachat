@@ -327,6 +327,10 @@ az vm create \
     --admin-password $password \
     --no-wait
 
+az vm wait -g $resource -n webVM --created
+az vm wait -g $resource -n rockVM --created
+az vm wait -g $resource -n dbVM --created
+
 ##########################################################
 ################ Krypter VM diskstorage ##################
 ##########################################################
@@ -334,14 +338,13 @@ az vm create \
 #   Kryptere vores 3 VMs med en encryption nøgle 
 #   som gemmes i den keyvault vi lavede tidligere
 #
+#           OBS KRÆVER 8 GB RAM PER VM
+#
 ##########################################################
 
-az vm wait -g $resource -n webVM --created
-az vm encryption enable -g $resource --name webVM --disk-encryption-keyvault "$vmvaultname"
-az vm wait -g $resource -n rockVM --created
-az vm encryption enable -g $resource --name rockVM --disk-encryption-keyvault "$vmvaultname"
-az vm wait -g $resource -n dbVM --created
-az vm encryption enable -g $resource --name dbVM --disk-encryption-keyvault "$vmvaultname"
+#az vm encryption enable -g $resource --name webVM --disk-encryption-keyvault "$vmvaultname"
+#az vm encryption enable -g $resource --name rockVM --disk-encryption-keyvault "$vmvaultname"
+#az vm encryption enable -g $resource --name dbVM --disk-encryption-keyvault "$vmvaultname"
 
 rm -rf ~/.ssh/justachat*
 
