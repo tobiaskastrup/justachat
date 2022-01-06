@@ -19,7 +19,7 @@
 location=northeurope
 randomIdentifier=group5
 
-vaultrandomIdentifier=ygdw433379
+vaultrandomIdentifier=ygdw4389379
 
 sshvaultname="ssh-$vaultrandomIdentifier"
 vmvaultname="vm-$vaultrandomIdentifier"
@@ -41,6 +41,25 @@ az group create \
 --name $resource \
 --location "$location" \
 --output table
+
+##########################################################
+################## Opret NSG og ASG'er ###################
+##########################################################
+
+# Opret en network security group
+az network nsg create \
+    --resource-group $resource \
+    --name myNSG 
+
+az network asg create --name webASG \
+    --resource-group $resource
+
+az network asg create --name dbASG \
+    --resource-group $resource
+
+az network asg create --name appASG \
+    --resource-group $resource
+
 
 ##########################################################
 ############## Opretter et virtual network ###############
@@ -66,22 +85,29 @@ az network vnet create \
     --location $location \
     --name myVNet \
     --address-prefixes 10.1.0.0/16 \
-    --subnet-name webSubnet \
-    --subnet-prefixes 10.1.0.0/24
+
+az network vnet subnet create \
+    --resource-group $resource \
+    --name webSubnet \
+    --vnet-name myVNet \
+    --address-prefixes 10.1.0.0/24 \
+    --network-security-group myNSG
 
 # Opretter et subnet til Rocket.chat serveren
 az network vnet subnet create \
     --resource-group $resource \
     --name rocketBackEndSubnet \
     --vnet-name myVNet \
-    --address-prefixes 10.1.1.0/24
+    --address-prefixes 10.1.1.0/24 \
+    --network-security-group myNSG
 	
 # Opretter vores DB subnet 
 az network vnet subnet create \
     --resource-group $resource \
     --name dbBackEndSubnet \
     --vnet-name myVNet \
-    --address-prefixes 10.1.2.0/24
+    --address-prefixes 10.1.2.0/24 \
+    --network-security-group myNSG
 	
 # Opretter et bastion subnet
 az network vnet subnet create \
@@ -89,6 +115,13 @@ az network vnet subnet create \
     --name AzureBastionSubnet \
     --vnet-name myVNet \
     --address-prefixes 10.1.3.0/24
+
+# Opretter et firewall subnet
+az network vnet subnet create \
+    --resource-group $resource \
+    --name AzureFirewallSubnet \
+    --vnet-name myVNet \
+    --address-prefixes 10.1.4.0/24
 
 ##########################################################
 ################## Opretter 2 offentlige IPs #############
@@ -156,45 +189,118 @@ az keyvault secret set \
 --value "$tempkey" \
 --output none
 
-# Laver en keyvault til vores disk encryption keys
-az keyvault create \
-    --location $location \
-    --name "$vmvaultname" \
-    --resource-group $resource \
-    --enabled-for-disk-encryption
+# # Laver en keyvault til vores disk encryption keys
+# az keyvault create \
+#     --location $location \
+#     --name "$vmvaultname" \
+#     --resource-group $resource \
+#     --enabled-for-disk-encryption
 
 ##########################################################
 ####################### BASTION ##########################
 ##########################################################
 
-# Opret bastion host
-az network bastion create \
+# # Opret bastion host
+# az network bastion create \
+#     --resource-group $resource \
+#     --name myBastionHost \
+#     --public-ip-address myBastionIP \
+#     --vnet-name myVNet \
+#     --location $location \
+#     --scale-units 2 # Fixer en fejl i cli'en så man ikke kan lave bastian igennem cli pt
+
+
+##########################################################
+####################### FIREWALL #########################
+##########################################################
+#
+#
+##########################################################
+
+az extension add --upgrade -n azure-firewall
+
+az network firewall create  --name FW-JUSTACHAT \
+                            --resource-group $resource \
+                            --location $location \
+                            --sku  AZFW_VNet \
+                            --tier "Standard"
+                        
+az network firewall ip-config create --name FW-ipconfig \
+                                     --firewall-name "FW-JUSTACHAT" \
+                                     --public-ip-address "myPublicIP" \
+                                     --resource-group $resource \
+                                     --vnet-name myVNet
+                
+az network firewall update -n "FW-JUSTACHAT" \
+                           -g $resource
+
+firewallIP=$(az network firewall ip-config show --firewall-nam FW-JUSTACHAT \
+    --name FW-ipconfig \
     --resource-group $resource \
-    --name myBastionHost \
-    --public-ip-address myBastionIP \
+    --query 'privateIpAddress' -o tsv)
+    
+az network route-table create   --name myRouteTable \
+                                --resource-group $resource
+
+az network route-table route create --address-prefix 0.0.0.0/0 \
+                                    --name default-web-route \
+                                    --next-hop-type VirtualAppliance \
+                                    --resource-group $resource \
+                                    --route-table-name myRouteTable \
+                                    --next-hop-ip-address $firewallIP
+
+az network firewall nat-rule collection create --collection-name natRulesCollection \
+                                               --firewall-name FW-JUSTACHAT \
+                                               --resource-group $resource
+
+az network firewall nat-rule create -c 'httpNATRules' \
+                                    --destination-addresses $publicIP \
+                                    --destination-ports '80' \
+                                    --firewall-name FW-JUSTACHAT \
+                                    --name 'http' \
+                                    --protocols 'TCP' \
+                                    --resource-group $resource \
+                                    --source-addresses '*' \
+                                    --translated-address '10.1.0.5' \
+                                    --translated-port '80' \
+                                    --action Dnat \
+                                    --priority 100
+
+az network firewall nat-rule create -c 'httpsNATRules' \
+                                    --destination-addresses $publicIP \
+                                    --destination-ports '443' \
+                                    --firewall-name FW-JUSTACHAT \
+                                    --name 'https' \
+                                    --protocols 'TCP' \
+                                    --resource-group $resource \
+                                    --source-addresses '*' \
+                                    --translated-address '10.1.0.5' \
+                                    --translated-port '443' \
+                                    --action Dnat \
+                                    --priority 120
+
+az network vnet subnet update \
+    --resource-group $resource \
+    --name webSubnet \
     --vnet-name myVNet \
-    --location $location \
-    --scale-units 2 # Fixer en fejl i cli'en så man ikke kan lave bastian igennem cli pt
+    --address-prefixes 10.1.0.0/24 \
+    --network-security-group myNSG \
+    --route-table myRouteTable
 
 ##########################################################
-########### Opret en network security group ##############
+#################### Opret NSG regler ####################
 ##########################################################
-
-# Opret en network security group
-az network nsg create \
-    --resource-group $resource \
-    --name myNSG
 
 # Opret network security group (NSG) regel til HTTP trafik til webserveren
 az network nsg rule create \
     --resource-group $resource \
     --nsg-name myNSG \
     --name myNSGRuleHTTP \
-    --protocol '*' \
+    --protocol 'TCP' \
     --direction inbound \
-    --source-address-prefix '*' \
-    --source-port-range '*' \
-    --destination-address-prefix '*' \
+    --source-address-prefix $firewallIP \
+    --source-port-range '80' \
+    --destination-asgs 'webASG' \
     --destination-port-range 80 \
     --access allow \
     --priority 200
@@ -204,15 +310,15 @@ az network nsg rule create \
     --resource-group $resource \
     --nsg-name myNSG \
     --name myNSGRuleHTTPS \
-    --protocol '*' \
+    --protocol 'TCP' \
     --direction inbound \
-    --source-address-prefix '*' \
-    --source-port-range '*' \
-    --destination-address-prefix '*' \
+    --source-address-prefix $firewallIP \
+    --source-port-range '443' \
+    --destination-asgs 'webASG' \
     --destination-port-range 443 \
     --access allow \
     --priority 250
-	
+
 # Opret NSG regel til trafik fra webserveren til rocketchatserveren (over port 3000)
 # (i mellem de virtuelle subnets)
 az network nsg rule create \
@@ -221,9 +327,9 @@ az network nsg rule create \
 	--name myNSGRuleRocket \
 	--protocol '*' \
 	--direction inbound \
-	--source-address-prefix '10.1.0.0/24' \
+	--source-asgs 'webASG' \
 	--source-port-range '*' \
-	--destination-address-prefix '10.1.1.0/24' \
+	--destination-asgs 'appASG' \
 	--destination-port-range 3000 \
 	--access allow \
 	--priority 300
@@ -236,12 +342,26 @@ az network nsg rule create \
 	--name myNSGRuleDB \
 	--protocol '*' \
 	--direction inbound \
-	--source-address-prefix '10.1.1.0/24' \
+	--source-asgs 'appASG' \
 	--source-port-range '*' \
-	--destination-address-prefix '10.1.2.0/24' \
+	--destination-asgs 'dbASG' \
 	--destination-port-range 27017 \
 	--access allow \
 	--priority 350
+
+# Opret network security group (NSG) regel til at afvise alt andet trafik end ovenstående regler
+az network nsg rule create \
+    --resource-group $resource \
+    --nsg-name myNSG \
+    --name DenyAllIn \
+    --protocol '*' \
+    --direction inbound \
+    --source-address-prefix '*' \
+    --source-port-range '*' \
+    --destination-address-prefix '*' \
+    --destination-port-range '*' \
+    --access deny \
+    --priority 4000
 
 ##########################################################
 ##################### WEBSERVER VM #######################
@@ -249,21 +369,10 @@ az network nsg rule create \
 #
 # Opretter 1 server til vores nginx proxy server,
 # flask application som kører på en gunicorn server
-# med IP-adressen 10.1.0.5 og en public IP $publicIP
+# med IP-adressen 10.1.0.5
 #
 ##########################################################
 
-# Opret et network interface til den virtuelle maskine
-az network nic create \
-	--resource-group $resource \
-	--name webNicVM \
-	--vnet-name myVNet \
-	--subnet webSubnet \
-	--public-ip-address myPublicIP \
-	--network-security-group myNSG \
-	--private-ip-address 10.1.0.5
-
-  
 az vm create \
     --resource-group $resource \
     --name webVM \
@@ -272,7 +381,11 @@ az vm create \
     --ssh-key-values "$(cat ~/.ssh/justachat.pub)" \
     --admin-username $login \
     --admin-password $password \
-	--nics webNicVM \
+    --nsg myNSG \
+    --asgs webASG \
+    --private-ip-address 10.1.0.5 \
+    --public-ip-address "" \
+    --nsg-rule NONE \
 	--no-wait
 
 ##########################################################
@@ -284,25 +397,20 @@ az vm create \
 #
 ##########################################################
 
-# Opret et network interface til den virtuelle maskine
-az network nic create \
-	--resource-group $resource \
-	--name rockNicVM \
-	--vnet-name myVNet \
-	--subnet rocketBackEndSubnet \
-	--network-security-group myNSG \
-	--private-ip-address 10.1.1.6
-
 # Opret virtual maskiner til rocketchat
 az vm create \
     --resource-group $resource \
     --name rockVM \
-    --nics rockNicVM \
     --image Canonical:0001-com-ubuntu-server-focal:20_04-lts:latest \
 	--size "Standard_DS1_v2" \
     --ssh-key-values "$(cat ~/.ssh/justachat.pub)" \
     --admin-username $login \
     --admin-password $password \
+    --nsg myNSG \
+    --asgs appASG \
+    --private-ip-address 10.1.1.6 \
+    --public-ip-address "" \
+    --nsg-rule NONE \
     --no-wait
 	
 ##########################################################
@@ -313,25 +421,20 @@ az vm create \
 #
 ##########################################################
 
-# Opret et network interface til den virtuelle maskine
-az network nic create \
-	--resource-group $resource \
-	--name dbNicVM \
-	--vnet-name myVNet \
-	--subnet dbBackEndSubnet \
-	--network-security-group myNSG \
-	--private-ip-address 10.1.2.7
-
 # Opret virtual maskiner til mongodb
 az vm create \
     --resource-group $resource \
     --name dbVM \
-    --nics dbNicVM \
     --image Canonical:0001-com-ubuntu-server-focal:20_04-lts:latest \
 	--size "Standard_DS1_v2" \
     --ssh-key-values "$(cat ~/.ssh/justachat.pub)" \
     --admin-username $login \
     --admin-password $password \
+    --nsg myNSG \
+    --asgs dbASG \
+    --private-ip-address 10.1.2.7 \
+    --public-ip-address "" \
+    --nsg-rule NONE \
     --no-wait
 
 # Venter på at alle VMs er oprettet med en vm wait
