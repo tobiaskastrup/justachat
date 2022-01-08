@@ -17,7 +17,7 @@
 ####################### VARIABLER ########################
 
 location=northeurope
-randomIdentifier=group5
+randomIdentifier=justachat
 
 # Generer et random nummer til vores vaults da de er globalt unikke
 let randomNum=$RANDOM*$RANDOM
@@ -26,8 +26,6 @@ sshvaultname="ssh-jac$randomNum"
 vmvaultname="vm-jac$randomNum"
 
 resource="resource-$randomIdentifier"
-server="server-$randomIdentifier"
-database="database-$randomIdentifier"
 
 login="rockadmin"
 password="Mahman12345!"
@@ -136,6 +134,15 @@ az network public-ip create \
 
 # Gemmer vores IP til besked i slutningen af scriptet
 publicIP=$(az network public-ip show -g $resource -n myPublicIP --query 'ipAddress' -o tsv) 
+
+echo "
+###########################################################
+##
+##                Public IP er $publicIP
+##              skift dine DNS indstillinger
+##
+###########################################################
+"
 
 # Opretter en public IP address til Bastion
 az network public-ip create \
