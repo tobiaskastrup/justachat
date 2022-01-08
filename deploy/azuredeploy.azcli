@@ -19,10 +19,11 @@
 location=northeurope
 randomIdentifier=group5
 
-vaultrandomIdentifier=ygdw4389379
+# Generer et random nummer til vores vaults da de er globalt unikke
+let randomNum=$RANDOM*$RANDOM
 
-sshvaultname="ssh-$vaultrandomIdentifier"
-vmvaultname="vm-$vaultrandomIdentifier"
+sshvaultname="ssh-jac$randomNum"
+vmvaultname="vm-jac$randomNum"
 
 resource="resource-$randomIdentifier"
 server="server-$randomIdentifier"
@@ -478,19 +479,19 @@ rm -rf ~/.ssh/justachat*
 
 # Script kørsel på MongoDB server
 az vm run-command invoke -g $resource -n dbVM --command-id RunShellScript --scripts "\
-curl -o mongoserver.sh https://raw.githubusercontent.com/tobiaskastrup/justachat/main/deploy/mongoserver.sh?token=ATKY4HGJVYQN6HMHP7K72HLBY5T3O &&\
+curl -o mongoserver.sh https://raw.githubusercontent.com/tobiaskastrup/justachat/main/deploy/mongoserver.sh &&\
 chmod a+x mongoserver.sh &&\
 ./mongoserver.sh"
 
 # Script kørsel på Rocketchat server
 az vm run-command invoke -g $resource -n rockVM --command-id RunShellScript --scripts "\
-curl -o rocketchatserver.sh https://raw.githubusercontent.com/tobiaskastrup/justachat/main/deploy/rocketchatserver.sh?token=ATKY4HBQND7WHOVBLX63PYDBY5TZG &&\
+curl -o rocketchatserver.sh https://raw.githubusercontent.com/tobiaskastrup/justachat/main/deploy/rocketchatserver.sh &&\
 chmod a+x rocketchatserver.sh  &&\
 ./rocketchatserver.sh"
 
 ## Script kørsel på webserver
 az vm run-command invoke -g $resource -n webVM --command-id RunShellScript --scripts "\
-curl -o webserver.sh https://raw.githubusercontent.com/tobiaskastrup/justachat/main/deploy/webserver.sh?token=ATKY4HFLI2E7AJ4SPLJTIELBY5TVI && \
+curl -o webserver.sh https://raw.githubusercontent.com/tobiaskastrup/justachat/main/deploy/webserver.sh && \
 chmod a+x webserver.sh && \
 ./webserver.sh"
 

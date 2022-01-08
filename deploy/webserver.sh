@@ -25,7 +25,6 @@
 # Token til at tilgå private respo i github
 # SKAL EVT OPDATES FØR BRUG !!!!!!!!!!
 
-gittoken="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"
 rocketip="10.1.1.6"
 
 ########### apt install + www mappe #############
@@ -47,7 +46,7 @@ sudo chown -R $USER:www-data /var/www/justa.chat
 cd /var/www/justa.chat
 
 # Henter vores webapplication fra github og gemmer i /var/www/justa.chat
-git clone https://tobiaskastrup:$gittoken@github.com/tobiaskastrup/justachat /var/www/justa.chat
+git clone https://github.com/tobiaskastrup/justachat /var/www/justa.chat
 
 ########### pipenv indstillinger ###############
 #
