@@ -159,6 +159,8 @@ az network vnet subnet create \
 #
 ##########################################################
 
+rm -rf ~/.ssh/justachat*
+
 # Generer et password til at bruge med SSH keys
 tempkey=$(openssl rand -base64 20)
 
@@ -218,16 +220,34 @@ az vm create \
     --resource-group $resource \
     --name webVM \
     --image Canonical:0001-com-ubuntu-server-focal:20_04-lts:latest \
-	--size "Standard_DS2_v3" \
+	--size "Standard_DS2_v2" \
     --ssh-key-values "$(cat ~/.ssh/justachat.pub)" \
     --admin-username $login \
     --admin-password $password \
     --nsg myNSG \
     --asgs webASG \
+    --vnet-name myVNet \
+    --subnet webSubnet \
     --private-ip-address 10.1.0.5 \
     --public-ip-address "" \
     --nsg-rule NONE \
-	--no-wait
+    --no-wait
+
+az vm create \
+    --resource-group "resource-justachat" \
+    --name webVM \
+    --image Canonical:0001-com-ubuntu-server-focal:20_04-lts:latest \
+	--size "Standard_DS2_v2" \
+    --admin-username $login \
+    --admin-password $password \
+    --nsg myNSG \
+    --asgs webASG \
+    --vnet-name myVNet \
+    --subnet webSubnet \
+    --private-ip-address 10.1.0.5 \
+    --public-ip-address "" \
+    --nsg-rule NONE
+
 
 ##########################################################
 ##################### ROCKETCHAT VM ######################
@@ -243,12 +263,14 @@ az vm create \
     --resource-group $resource \
     --name rockVM \
     --image Canonical:0001-com-ubuntu-server-focal:20_04-lts:latest \
-	--size "Standard_DS2_v3" \
+    --size "Standard_DS1_v2" \
     --ssh-key-values "$(cat ~/.ssh/justachat.pub)" \
     --admin-username $login \
     --admin-password $password \
     --nsg myNSG \
     --asgs appASG \
+    --vnet-name myVNet \
+    --subnet rocketBackEndSubnet \
     --private-ip-address 10.1.1.6 \
     --public-ip-address "" \
     --nsg-rule NONE \
@@ -267,12 +289,14 @@ az vm create \
     --resource-group $resource \
     --name dbVM \
     --image Canonical:0001-com-ubuntu-server-focal:20_04-lts:latest \
-	--size "Standard_DS2_v3" \
+    --size "Standard_DS1_v2" \
     --ssh-key-values "$(cat ~/.ssh/justachat.pub)" \
     --admin-username $login \
     --admin-password $password \
     --nsg myNSG \
     --asgs dbASG \
+    --vnet-name myVNet \
+    --subnet dbBackEndSubnet \
     --private-ip-address 10.1.2.7 \
     --public-ip-address "" \
     --nsg-rule NONE \
@@ -332,10 +356,6 @@ az network route-table route create --address-prefix 0.0.0.0/0 \
                                     --route-table-name myRouteTable \
                                     --next-hop-ip-address $firewallIP
 
-az network firewall nat-rule collection create --collection-name natRulesCollection \
-                                               --firewall-name FW-JUSTACHAT \
-                                               --resource-group $resource
-
 az network firewall nat-rule create -c 'httpNATRules' \
                                     --destination-addresses $publicIP \
                                     --destination-ports '80' \
@@ -362,6 +382,18 @@ az network firewall nat-rule create -c 'httpsNATRules' \
                                     --action Dnat \
                                     --priority 120
 
+
+az network firewall network-rule create -c 'outboundRules' \
+                                    --destination-addresses '*' \
+                                    --destination-ports '*' \
+                                    --firewall-name FW-JUSTACHAT \
+                                    --name 'AllowAllOutTrafic' \
+                                    --protocols 'Any' \
+                                    --resource-group $resource \
+                                    --source-addresses '10.1.0.5' \
+                                    --priority 101 \
+                                    --action 'Allow'
+
 az network vnet subnet update \
     --resource-group $resource \
     --name webSubnet \
@@ -382,7 +414,7 @@ az network nsg rule create \
     --protocol 'TCP' \
     --direction inbound \
     --source-address-prefix $firewallIP \
-    --source-port-range '80' \
+    --source-port-range '*' \
     --destination-asgs 'webASG' \
     --destination-port-range 80 \
     --access allow \
@@ -396,7 +428,7 @@ az network nsg rule create \
     --protocol 'TCP' \
     --direction inbound \
     --source-address-prefix $firewallIP \
-    --source-port-range '443' \
+    --source-port-range '*' \
     --destination-asgs 'webASG' \
     --destination-port-range 443 \
     --access allow \
@@ -408,7 +440,7 @@ az network nsg rule create \
 	--resource-group $resource \
 	--nsg-name myNSG \
 	--name myNSGRuleRocket \
-	--protocol '*' \
+	--protocol 'TCP' \
 	--direction inbound \
 	--source-asgs 'webASG' \
 	--source-port-range '*' \
@@ -423,7 +455,7 @@ az network nsg rule create \
 	--resource-group $resource \
 	--nsg-name myNSG \
 	--name myNSGRuleDB \
-	--protocol '*' \
+	--protocol 'TCP' \
 	--direction inbound \
 	--source-asgs 'appASG' \
 	--source-port-range '*' \
@@ -431,6 +463,19 @@ az network nsg rule create \
 	--destination-port-range 27017 \
 	--access allow \
 	--priority 350
+
+az network nsg rule create \
+	--resource-group $resource \
+	--nsg-name myNSG \
+	--name myNSGRuleBastion \
+	--protocol 'TCP' \
+	--direction inbound \
+	--source-address-prefixes 10.1.3.0/24 \
+	--source-port-range '*' \
+	--destination-asgs webASG appASG dbASG \
+	--destination-port-range 22 \
+	--access allow \
+	--priority 400
 
 # Opret network security group (NSG) regel til at afvise alt andet trafik end ovenstående regler
 az network nsg rule create \
@@ -462,10 +507,11 @@ az vm wait -g $resource -n dbVM --created
 #
 ##########################################################
 
-# Udkommenteret da Azure Trial kun tillader 4 vCPUs i alt nu, som ikke har 8 GB RAM
+# Udkommenteret rock og db VM da Azure Trial kun tillader 4 vCPUs i alt nu, hvilket kun tillader
+# 1 VM, som har nok RAM, til at kryptere disken
 az vm encryption enable -g $resource --name webVM --disk-encryption-keyvault "$vmvaultname"
-az vm encryption enable -g $resource --name rockVM --disk-encryption-keyvault "$vmvaultname"
-az vm encryption enable -g $resource --name dbVM --disk-encryption-keyvault "$vmvaultname"
+# az vm encryption enable -g $resource --name rockVM --disk-encryption-keyvault "$vmvaultname"
+# az vm encryption enable -g $resource --name dbVM --disk-encryption-keyvault "$vmvaultname"
 
 # Fjerner ssh nøglerne fra vores cli storage account i azure
 rm -rf ~/.ssh/justachat*
