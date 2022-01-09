@@ -25,7 +25,8 @@
 # Token til at tilgå private respo i github
 # SKAL EVT OPDATES FØR BRUG !!!!!!!!!!
 
-rocketip="10.1.1.6"
+
+
 
 ########### apt install + www mappe #############
 # Installere python pip3 og nginx til at eksekvere
@@ -87,7 +88,7 @@ cat << EOF |sudo tee -a /var/www/justa.chat/wsgi.py
 from webapp.app import app
 
 if __name__ == '__main__':
-	app.run(debug=False)
+    app.run(debug=False)
 EOF
 
 ############## justachat.service ###############
@@ -131,27 +132,27 @@ sudo systemctl enable justachat.service && sudo systemctl start justachat.servic
 # nginx. 
 #
 ################################################
-cat << EOF |sudo tee -a /etc/nginx/conf.d/justachat.conf
+cat << EOF | sudo tee -a /etc/nginx/conf.d/justachat.conf
 server {
-	listen 80;
-	server_name justa.chat;
+    listen 80;
+    server_name justa.chat;
 
-	access_log /var/log/nginx/justachat.access.log;
-		error_log /var/log/nginx/justachat.error.log;
+    access_log /var/log/nginx/justachat.access.log;
+        error_log /var/log/nginx/justachat.error.log;
  
-		location / {
-				include proxy_params;
-				proxy_pass http://unix:/var/www/justa.chat/justachat.sock;
-		}
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/var/www/justa.chat/justachat.sock;
+    }
 }
 EOF
 
 # Tilføjer indhold til /etc/nginx/conf.d/admin.justachat.conf filen, 
 # som laver en proxy til vores rocketchat side 
 # rocketip:3000 > admin.justa.chat
-cat << EOF |sudo tee -a /etc/nginx/conf.d/admin.justachat.conf
+cat << EOF | sudo tee -a /etc/nginx/conf.d/admin.justachat.conf
 upstream rocket_backend {
-  server $rocketip:3000;
+    server $rocketip:3000;
 }
 
 server {

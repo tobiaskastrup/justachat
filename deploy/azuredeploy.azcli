@@ -275,7 +275,6 @@ az vm create \
     --name dbVM \
     --image Canonical:0001-com-ubuntu-server-focal:20_04-lts:latest \
     --size "Standard_DS1_v2" \
-    --ssh-key-values "$(cat ~/.ssh/justachat.pub)" \
     --admin-username $login \
     --admin-password $password \
     --nsg myNSG \
@@ -287,6 +286,7 @@ az vm create \
     --nsg-rule NONE \
     --no-wait
 
+--ssh-key-values "$(cat ~/.ssh/justachat.pub)" \
 ##########################################################
 ####################### BASTION ##########################
 ##########################################################
