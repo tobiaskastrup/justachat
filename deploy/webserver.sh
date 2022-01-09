@@ -180,8 +180,8 @@ EOF
 sudo rm /etc/nginx/sites-enabled/default
 sudo systemctl enable nginx && sudo systemctl start nginx
 # Henter et SSL ertifikat fra Let's Encrypt
-certbot run -n --nginx --agree-tos -d justa.chat -m admin@enode.dk --no-eff-email --redirect
-certbot run -n --nginx --agree-tos -d admin.justa.chat -m admin@enode.dk --no-eff-email --redirect
+sudo certbot run -n --nginx --agree-tos -d justa.chat -m admin@enode.dk --no-eff-email --redirect
+sudo certbot run -n --nginx --agree-tos -d admin.justa.chat -m admin@enode.dk --no-eff-email --redirect
 # Genstarter nginx efter SSL certifikat er implmenteret
 sudo systemctl restart nginx
 
