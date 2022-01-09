@@ -233,21 +233,6 @@ az vm create \
     --nsg-rule NONE \
     --no-wait
 
-az vm create \
-    --resource-group "resource-justachat" \
-    --name webVM \
-    --image Canonical:0001-com-ubuntu-server-focal:20_04-lts:latest \
-	--size "Standard_DS2_v2" \
-    --admin-username $login \
-    --admin-password $password \
-    --nsg myNSG \
-    --asgs webASG \
-    --vnet-name myVNet \
-    --subnet webSubnet \
-    --private-ip-address 10.1.0.5 \
-    --public-ip-address "" \
-    --nsg-rule NONE
-
 
 ##########################################################
 ##################### ROCKETCHAT VM ######################
