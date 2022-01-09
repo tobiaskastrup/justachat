@@ -119,13 +119,13 @@ class PublicChannels:
         
         return tempRooms[i]
     def printMessages(self, chosenPrivateChannel, msgCount):
-    '''Printer beskeder fra en channel'''
-    msg = self.rocket.channels_history(self.myRooms[chosenPrivateChannel], count=msgCount).json()
+        '''Printer beskeder fra en channel'''
+        msg = self.rocket.channels_history(self.myRooms[chosenPrivateChannel], count=msgCount).json()
 
-    # Itterer igennem beskeder fra rummet
-    print(f"\n<<< Beskeder fra {chosenPrivateChannel} >>>")
-    if "messages" in msg:
-        msgliste = msg["messages"]
-        if type(msgliste) is list:
-            for xyz in reversed(msgliste):
-                print(f'{xyz["u"]["username"]}:     {xyz["msg"]}')
+        # Itterer igennem beskeder fra rummet
+        print(f"\n<<< Beskeder fra {chosenPrivateChannel} >>>")
+        if "messages" in msg:
+            msgliste = msg["messages"]
+            if type(msgliste) is list:
+                for xyz in reversed(msgliste):
+                    print(f'{xyz["u"]["username"]}:     {xyz["msg"]}')
