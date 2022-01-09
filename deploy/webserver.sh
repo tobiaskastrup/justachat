@@ -42,7 +42,7 @@ source ~/.bashrc
 # Laver en mappe til vores projekt,
 # sætter tillader for mappen til $USER:www-data
 sudo mkdir -p /var/www/justa.chat
-sudo chown -R $USER:www-data /var/www/justa.chat
+sudo chown -R rockadmin:www-data /var/www/justa.chat
 cd /var/www/justa.chat
 
 # Henter vores webapplication fra github og gemmer i /var/www/justa.chat
@@ -100,7 +100,7 @@ EOF
 ################################################
 
 sudo mkdir -p /var/log/gunicorn
-sudo chown -R $USER:www-data /var/log/gunicorn
+sudo chown -R rockadmin:www-data /var/log/gunicorn
 
 # Indsætter service konfiguration i justachat.service
 cat << EOF |sudo tee -a /etc/systemd/system/justachat.service
