@@ -33,6 +33,7 @@ sudo apt install -y build-essential nodejs graphicsmagick
 
 #Installere inherits og n.
 sudo npm install -g inherits n
+sudo npm install bcrypt
 
 #Opretter en symbolic link for nodens binære fil til
 sudo ln -s /usr/bin/node /usr/local/bin/node
