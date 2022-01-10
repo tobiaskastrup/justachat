@@ -61,7 +61,7 @@ sudo mkdir -p /var/www/justa.chat/.venv
 sudo touch /var/www/justa.chat/.env
 
 # Tilføjer vores app startup variabler til .env
-cat << EOF |sudo tee -a /var/www/justa.chat/.env
+cat << EOF | sudo tee -a /var/www/justa.chat/.env
 FLASK_APP=wsgi.py
 FLASK_ENV=production
 EOF
@@ -182,7 +182,6 @@ sudo rm /etc/nginx/sites-enabled/default
 sudo systemctl enable nginx && sudo systemctl start nginx
 # Henter et SSL ertifikat fra Let's Encrypt
 sudo certbot run -n --nginx --agree-tos -d justa.chat -m admin@enode.dk --no-eff-email --redirect
-sudo certbot run -n --nginx --agree-tos -d admin.justa.chat -m admin@enode.dk --no-eff-email --redirect
 # Genstarter nginx efter SSL certifikat er implmenteret
 sudo systemctl restart nginx
 

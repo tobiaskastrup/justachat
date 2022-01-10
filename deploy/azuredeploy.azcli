@@ -35,7 +35,6 @@ password="Mahman12345!"
 ############## Opret en resource group ###################
 ##########################################################
 
-echo "Creating $resource..."
 az group create \
 --name $resource \
 --location "$location" \
@@ -313,7 +312,7 @@ az extension add --upgrade -n azure-firewall
 az network firewall create  --name FW-JUSTACHAT \
                             --resource-group $resource \
                             --location $location \
-                            --sku  AZFW_VNet \
+                            --sku AZFW_VNet \
                             --tier "Standard" \
                             --threat-intel-mode Deny
                         
@@ -326,7 +325,7 @@ az network firewall ip-config create --name FW-ipconfig \
 az network firewall update -n "FW-JUSTACHAT" \
                            -g $resource
 
-firewallIP=$(az network firewall ip-config show --firewall-nam FW-JUSTACHAT \
+firewallIP=$(az network firewall ip-config show --firewall-name FW-JUSTACHAT \
     --name FW-ipconfig \
     --resource-group $resource \
     --query 'privateIpAddress' -o tsv)
@@ -398,7 +397,7 @@ az network nsg rule create \
     --name myNSGRuleHTTP \
     --protocol 'TCP' \
     --direction inbound \
-    --source-address-prefix $firewallIP \
+    --source-address-prefixes '*' \
     --source-port-range '*' \
     --destination-asgs 'webASG' \
     --destination-port-range 80 \
@@ -412,7 +411,7 @@ az network nsg rule create \
     --name myNSGRuleHTTPS \
     --protocol 'TCP' \
     --direction inbound \
-    --source-address-prefix $firewallIP \
+    --source-address-prefixes '*' \
     --source-port-range '*' \
     --destination-asgs 'webASG' \
     --destination-port-range 443 \

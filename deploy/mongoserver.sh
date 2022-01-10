@@ -73,6 +73,3 @@ sudo systemctl enable mongod && sudo systemctl restart mongod
 sudo ufw allow from 10.1.1.6 to any port 27017
 sudo ufw allow from 10.1.3.0/24 to any port 22 #SSH from bastion
 sudo ufw --force enable
-
-
-
